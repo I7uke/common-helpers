@@ -1,0 +1,59 @@
+{
+  "name": "ts-common-helpers",
+  "version": "1.1.2",
+  "description": "",
+  "scripts": {
+    "install-package": "yarn install --frozen-lockfile",
+    "test": "jest --coverage",
+    "test-convertToDate": "jest convertToDate.test.ts --coverage",
+    "test-convertToNumber": "jest convertToNumber.test.ts --coverage",
+    "test-dateFormatForView": "jest dateFormatForView.test.ts --coverage",
+    "test-fixedLengthString": "jest fixedLengthString.test.ts --coverage",
+    "test-getFileExtensionByName": "jest getFileExtensionByName.test.ts --coverage",
+    "test-getIdFromUrl": "jest getIdFromUrl.test.ts --coverage",
+    "test-getUrlParameters": "jest getUrlParameters.test.ts --coverage",
+    "test-numberRounding": "jest numberRounding.test.ts --coverage",
+    "test-validationNumber": "jest validationNumber.test.ts --coverage",
+    "test-validationNumberArray": "jest validationNumberArray.test.ts --coverage",
+    "test-validationString": "jest validationString.test.ts --coverage",
+    "test-validationStringArray": "jest validationStringArray.test.ts --coverage",
+    "test-checkDate": "jest checkDate.test.ts --coverage",
+    "test-getPagination": "jest getPagination.test.ts --coverage",
+    "test-validationNumberInRange": "jest validationNumberInRange.test.ts --coverage",
+    "build-prod": "rollup --config"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CoraxEidolon/ts-common-helpers.git"
+  },
+  "main": "./dist",
+  "author": "Ivan",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/CoraxEidolon/ts-common-helpers/issues"
+  },
+  "homepage": "https://github.com/CoraxEidolon/ts-common-helpers#readme",
+  "devDependencies": {
+    "@babel/core": "7.24.3",
+    "@babel/plugin-transform-runtime": "7.24.3",
+    "@babel/preset-env": "7.24.3",
+    "@babel/preset-typescript": "7.24.1",
+    "@babel/runtime": "7.24.1",
+    "@types/jest": "29.5.12",
+    "@types/node": "20.11.30",
+    "cross-env": "7.0.3",
+    "jest": "29.7.0",
+    "jest-environment-jsdom": "29.7.0",
+    "ts-jest": "29.1.2",
+    "ts-node": "10.9.2",
+    "tsconfig-paths": "4.2.0",
+    "typescript": "5.4.3",
+    "@rollup/plugin-babel": "6.0.4",
+    "@rollup/plugin-node-resolve": "15.2.3",
+    "@rollup/plugin-terser": "0.4.4",
+    "@rollup/plugin-typescript": "11.1.6",
+    "rollup": "4.13.0",
+    "rollup-plugin-visualizer": "5.12.0",
+    "tslib": "2.6.2"
+  }
+}
