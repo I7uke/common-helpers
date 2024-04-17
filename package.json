@@ -1,6 +1,6 @@
 {
   "name": "ts-common-helpers",
-  "version": "1.1.3",
+  "version": "1.1.31",
   "description": "",
   "scripts": {
     "install-package": "yarn install --frozen-lockfile",
@@ -22,7 +22,7 @@
     "test-validationNumberInRange": "jest validationNumberInRange.test.ts --coverage",
     "build-prod": "rollup --config"
   },
-  "main": "/dist",
+  "main": "./dist",
   "author": "Ivan",
   "type": "module",
   "devDependencies": {
