@@ -1,36 +1,33 @@
-type Options = {
-    /**
-     * Число для округления
-     */
-    readonly number: number | undefined | null;
-    /**
-     * Точность, количество знаков после запятой
-     * Если заданная точность меньше или равна нулю, число будет округлено до ближайшего целого
-     */
-    readonly accuracy?: number;
-}
-
 /**
  * Округлить число до знака
- * @param inputOptions
+ * Если заданная точность меньше или равна нулю, число будет округлено до ближайшего целого
+ * @param number - Число для округления
+ * @param accuracy - Точность, количество знаков после запятой
+ * @returns 
  */
-export default function numberRounding(options: Options): number {
-    if (typeof options.number !== 'number') {
+export default function numberRounding(number: number | undefined | null, accuracy?: number): number {
+    if (typeof number !== 'number') {
         return 0;
     }
 
-    if (isNaN(options.number)) {
+    if (isNaN(number)) {
         return 0;
     }
 
-    let accuracy: number = typeof options.accuracy === 'number' ? options.accuracy : 0;
-    
-    if (accuracy <= 0) {
-        return Math.round(options.number);
+    if(typeof accuracy !== 'number') {
+        return Math.round(number);
     }
 
-    const sign: number = Math.sign(options.number);
-    const positiveNumber = Math.abs(options.number);
+    if(isNaN(accuracy)) {
+        return Math.round(number);
+    }
+
+    if(accuracy <=0) {
+        return Math.round(number);
+    }
+
+    const sign: number = Math.sign(number);
+    const positiveNumber = Math.abs(number);
     const result = Number(`${Math.round(Number(`${positiveNumber}e+${accuracy}`))}e-${accuracy}`);
     return result * sign;
 }

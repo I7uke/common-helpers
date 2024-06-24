@@ -1,27 +1,26 @@
 /**
  * Получить расширение файла по его имени
  * Расширение файла всегда отдается в нижнем регистре
- * @param inputFileName
+ * Если было передано не корректное имя файла вернет undefined
+ * @param fileName - Название файла вида someFile.ext
  */
-export default function getFileExtensionByName(inputFileName: string | undefined | null): string {
-    const unknownFileExtension: string = 'unknown';
-
-    if (typeof inputFileName !== 'string') {
-        return unknownFileExtension;
+export default function getFileExtensionByName(fileName: string | undefined | null): string | undefined {
+    if (typeof fileName !== 'string') {
+        return undefined;
     }
 
-    if (!inputFileName) {
-        return unknownFileExtension;
+    if (!fileName) {
+        return undefined;
     }
 
-    if (inputFileName.length < 3) {
-        return unknownFileExtension;
+    if (fileName.length < 3) {
+        return undefined;
     }
 
-    const tmp = inputFileName.split('.');
+    const tmp = fileName.split('.');
 
     if (!tmp.length) {
-        return unknownFileExtension;
+        return undefined;
     }
 
     const fileExtension: string = tmp[tmp.length - 1];
@@ -30,6 +29,6 @@ export default function getFileExtensionByName(inputFileName: string | undefined
         return fileExtension.toLowerCase();
     }
 
-    return unknownFileExtension;
+    return undefined;
 }
 

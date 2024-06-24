@@ -1,35 +1,38 @@
-type FixedLengthStringOptions = {
-    /**
-     * Целевая строка
-     */
-    readonly value: string | undefined | null;
+import { InputOptions } from "./models/inputOptions";
+
+interface Options extends InputOptions<string | undefined | null, string> {
     /**
      * Максимальная длинна строки
      */
     readonly maxLength: number;
     /**
-     * Значение по умолчанию, будет возвращено в случае если целевое значение не является строкой или является пустой строкой
+     * Добавлять точки (...) в конце строки, по умолчанию true
      */
-    readonly defaultValue?: string;
+    readonly isAddDots?: boolean;
 }
 
-function validationMaxLength(inputValue: number | string | null): number {
-    if (!inputValue) {
+function validationMaxLength(num: number | string | null): number {
+    if (typeof num !== 'number') {
         return 0;
     }
 
-    if (typeof inputValue !== 'number') {
+    if (num <= 0) {
         return 0;
     }
 
-    return inputValue;
+    if (isNaN(num)) {
+        return 0;
+    }
+
+    return num;
 }
 
 /**
  * Ограничить строку до заданного количества символов
- * @param inputOptions
+ * Если value не строка или пустая строка будет возвращено defaultValue
+ * @param Options
  */
-export default function fixedLengthString(options: FixedLengthStringOptions): string {
+export default function fixedLengthString(options: Options): string {
     const maxLength: number = validationMaxLength(options.maxLength);
 
     if (typeof options.value !== 'string') {
@@ -45,7 +48,13 @@ export default function fixedLengthString(options: FixedLengthStringOptions): st
     }
 
     if (options.value.length >= maxLength) {
-        return `${options.value.slice(0, maxLength)}...`;
+        const result: string = options.value.slice(0, maxLength).trim();
+
+        if (options.isAddDots === false) {
+            return result;
+        }
+
+        return `${result}...`;
     }
 
     return options.value;

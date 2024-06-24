@@ -1,29 +1,20 @@
-import { InputOptions } from "./models/inputOptions";
-
 type ValueForValidation = number | null | undefined;
 
 /**
- * Проверить число
- * Значение по умолчанию, будет возвращено, в случае если число для проверки не являлось числом
- * @param inputOptions
+ * Проверяет, является ли переданное значение числом.
+ * Значение по умолчанию будет возвращено, если значение не число
+ * @param value - Значение для проверки
+ * @param defaultValue - Значение по умолчанию, будет возвращено, если значение не строка. Если если отстуствует, то 0
+ * @returns 
  */
-export default function validationNumber(options: InputOptions<ValueForValidation, number>): number {
-
-    if (typeof options.value !== 'number') {
-        if (typeof options.defaultValue === 'number') {
-            return options.defaultValue;
-        } else {
-            return 0;
-        }
+export default function validationNumber(value: ValueForValidation, defaultValue?: number): number {
+    if (typeof value !== 'number') {
+        return defaultValue || 0;
     }
 
-    if (isNaN(options.value)) {
-        if (typeof options.defaultValue === 'number') {
-            return options.defaultValue;
-        } else {
-            return 0;
-        }
+    if (isNaN(value)) {
+        return defaultValue || 0;
     }
 
-    return options.value;
+    return value;
 }

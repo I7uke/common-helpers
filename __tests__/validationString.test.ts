@@ -1,73 +1,51 @@
 import validationString from "../src/validationString";
 
 test('Строка', () => {
-    expect(validationString({
-        defaultValue: 'string defaultValue',
-        value: 'Lorem ipsum dolor sit amet, solum summo platonem has ea'
-    })).toStrictEqual('Lorem ipsum dolor sit amet, solum summo platonem has ea');
+    expect(validationString('Lorem ipsum dolor sit amet, solum summo platonem has ea', 'string defaultValue'))
+        .toStrictEqual('Lorem ipsum dolor sit amet, solum summo platonem has ea');
 });
 
 test('Пустая строка', () => {
-    expect(validationString({
-        defaultValue: 'string defaultValue',
-        value: ''
-    })).toStrictEqual('string defaultValue');
+    expect(validationString('', 'string defaultValue'))
+        .toStrictEqual('');
 });
 
 test('Пустая строка без defaultValue', () => {
-    expect(validationString({
-        value: ''
-    })).toStrictEqual('');
+    expect(validationString(''))
+        .toStrictEqual('');
 });
 
 test('defaultValue отсутствует', () => {
-    expect(validationString({
-        value: undefined
-    })).toStrictEqual('');
+    expect(validationString(undefined))
+        .toStrictEqual('');
 });
 
 test('undefined', () => {
-    expect(validationString({
-        defaultValue: 'string defaultValue',
-        value: undefined
-    })).toStrictEqual('string defaultValue');
+    expect(validationString(undefined, 'string defaultValue'))
+        .toStrictEqual('string defaultValue');
 });
 
 test('null', () => {
-    expect(validationString({
-        defaultValue: 'string defaultValue',
-        value: null
-    })).toStrictEqual('string defaultValue');
+    expect(validationString(null, 'string defaultValue'))
+        .toStrictEqual('string defaultValue');
 });
 
 test('Некорректное значение valueForValidation - NaN', () => {
-    expect(validationString({
-        defaultValue: 'string defaultValue',
-        // @ts-ignore
-        value: NaN
-    })).toStrictEqual('string defaultValue');
+    expect(validationString(NaN, 'string defaultValue'))
+        .toStrictEqual('string defaultValue');
 });
 
 test('Некорректное значение valueForValidation - число', () => {
-    expect(validationString({
-        defaultValue: 'string defaultValue',
-        // @ts-ignore
-        value: 123456789
-    })).toStrictEqual('string defaultValue');
+    expect(validationString(123456789, 'string defaultValue'))
+        .toStrictEqual('string defaultValue');
 });
 
 test('Некорректное значение valueForValidation - массив', () => {
-    expect(validationString({
-        defaultValue: 'string defaultValue',
-        // @ts-ignore
-        value: []
-    })).toStrictEqual('string defaultValue');
+    expect(validationString([], 'string defaultValue'))
+        .toStrictEqual('string defaultValue');
 });
 
 test('Некорректное значение valueForValidation - объект', () => {
-    expect(validationString({
-        defaultValue: 'string defaultValue',
-        // @ts-ignore
-        value: {test: 123}
-    })).toStrictEqual('string defaultValue');
+    expect(validationString({ test: 123 }, 'string defaultValue'))
+        .toStrictEqual('string defaultValue');
 });

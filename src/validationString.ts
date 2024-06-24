@@ -1,23 +1,16 @@
-import { InputOptions } from "./models/inputOptions";
-
-type ValueForValidation = string | null | undefined;
+type ValueForValidation = string | undefined | null;
 
 /**
- * Проверяет строку
- * Значение по умолчанию, будет возвращено, если переданное значение не является строкой или пустой строкой
- * @param inputOptions
+ * Проверяет, является ли переданное значение строкой.
+ * Значение по умолчанию, будет возвращено, если значение не строка
+ * @param value - Значение для проверки
+ * @param defaultValue - Значение по умолчанию, будет возвращено, если значение не строка. Если если отстуствует, то пустая строка
+ * @returns 
  */
-export default function validationString(options: InputOptions<ValueForValidation, string>): string {
-
-    if (typeof options.value !== 'string') {
-        return options.defaultValue || '';
+export default function validationString(value: ValueForValidation, defaultValue?: string): string {
+    if (typeof value !== 'string') {
+        return defaultValue || '';
     }
 
-    const resultString = options.value.trim();
-
-    if (!resultString) {
-        return options.defaultValue || '';
-    }
-
-    return resultString;
+    return value.trim();
 }

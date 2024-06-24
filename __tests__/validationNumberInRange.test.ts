@@ -94,7 +94,7 @@ test('Число больше интервала [1, 3] defaultValue', () => {
         max: 3,
         value: 4,
         defaultValue: 2
-    })).toStrictEqual(2);
+    })).toStrictEqual(3);
 });
 
 test('Число больше интервала [1, 3] defaultValue', () => {
@@ -103,7 +103,7 @@ test('Число больше интервала [1, 3] defaultValue', () => {
         max: 3,
         value: 4,
         defaultValue: 10
-    })).toStrictEqual(10);
+    })).toStrictEqual(3);
 });
 
 test('Число меньше интервала [1, 3]', () => {
@@ -120,7 +120,7 @@ test('Число меньше интервала [1, 3] defaultValue', () => {
         max: 3,
         value: 0,
         defaultValue: 2
-    })).toStrictEqual(2);
+    })).toStrictEqual(1);
 });
 
 test('Число меньше интервала [1, 3] defaultValue', () => {
@@ -129,7 +129,7 @@ test('Число меньше интервала [1, 3] defaultValue', () => {
         max: 3,
         value: 0,
         defaultValue: 10
-    })).toStrictEqual(10);
+    })).toStrictEqual(1);
 });
 
 test('min и max NaN', () => {
@@ -166,7 +166,6 @@ test('Все NaN', () => {
     })).toStrictEqual(0);
 });
 
-
 test('Число в интервале [-5, 5] правая граница', () => {
     expect(validationNumberInRange({
         min: -5,
@@ -198,4 +197,37 @@ test('Число в интервале [-5, 5] правая граница', () 
         max: 5,
         value: 5.01,
     })).toStrictEqual(5);
+});
+
+test('Единичный интервал [3, 3] value', () => {
+    expect(validationNumberInRange({
+        min: 3,
+        max: 3,
+        value: 3,
+    })).toStrictEqual(3);
+});
+
+test('Единичный интервал [3, 3] min', () => {
+    expect(validationNumberInRange({
+        min: 3,
+        max: 3,
+        value: 1,
+    })).toStrictEqual(3);
+});
+
+test('Единичный интервал [3, 3] max', () => {
+    expect(validationNumberInRange({
+        min: 3,
+        max: 3,
+        value: 4,
+    })).toStrictEqual(3);
+});
+
+
+test('Не корректный интервал [3, 1]', () => {
+    expect(validationNumberInRange({
+        min: 3,
+        max: 1,
+        value: 4,
+    })).toStrictEqual(4);
 });

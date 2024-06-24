@@ -1,15 +1,18 @@
-export default function getUrlParametersParser(): URLSearchParams {
-    const url: string = location.href;
+/**
+ * Возвращает URLSearchParams
+ * @param url - URL содержащий параметры
+ * @returns 
+ */
+export default function getUrlParametersParser(url: string | undefined | null): URLSearchParams {
+    if (typeof url !== 'string') {
+        return new URLSearchParams('');
+    }
 
     if (!url) {
         return new URLSearchParams('');
     }
 
-    if (typeof url !== 'string') {
-        return new URLSearchParams('');
-    }
-
-    if (url.length < 5) {
+    if (url.length < 7) {
         return new URLSearchParams('');
     }
 

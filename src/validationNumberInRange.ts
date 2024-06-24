@@ -1,18 +1,25 @@
 import { InputOptions } from "./models/inputOptions";
 
-type ValueForValidation = number | null | undefined;
+type ValueForValidation = number | unknown;
 
 interface Options extends InputOptions<ValueForValidation, number> {
+    /**
+     * Минимальное значение
+     */
     readonly min?: number;
+    /**
+     * Максимальное значение
+     */
     readonly max?: number;
 }
 
 /**
- * Проверить принадлежит ли число диапозону [min, max]
- * Значение по умолчанию, будет возвращено, в случае если число для проверки не являлось числом или не принадлежит интервалу
- * Если значение по умолчанию отсутствует и число меньше min будет возвращен min
- * Если значение по умолчанию отсутствует и число больше max будет возвращен max
+ * Проверить принадлежит ли число диапазону [min, max]
+ * Значение по умолчанию, будет возвращено, если число для проверки не являлось числом
+ * Если число меньше min будет возвращен min
+ * Если число больше max будет возвращен max
  * Если min и max отсутствуют, будет выполнена только проверка является ли value числом
+ * Если передан некорректный интервал, например min > max, будет выполнена только проверка является ли value числом
  * @param inputOptions
  */
 export default function validationNumberInRange(options: Options): number {
@@ -25,14 +32,17 @@ export default function validationNumberInRange(options: Options): number {
         return options.defaultValue || 0;
     }
 
+    if(typeof options.min === 'number' && typeof options.max === 'number') {
+        if(options.min > options.max) {
+            // Некорректный интервал, min > max
+            return options.value;
+        }
+    }
+
     if (typeof options.min === 'number') {
         if (!isNaN(options.min)) {
             if (options.value < options.min) {
-                if (typeof options.defaultValue === 'number') {
-                    return options.defaultValue;
-                } else {
-                    return options.min;
-                }
+                return options.min;
             }
         }
     }
@@ -40,11 +50,7 @@ export default function validationNumberInRange(options: Options): number {
     if (typeof options.max === 'number') {
         if (!isNaN(options.max)) {
             if (options.value > options.max) {
-                if (typeof options.defaultValue === 'number') {
-                    return options.defaultValue;
-                } else {
-                    return options.max;
-                }
+                return options.max;
             }
         }
     }

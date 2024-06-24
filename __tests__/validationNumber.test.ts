@@ -1,73 +1,61 @@
 import validationNumber from "../src/validationNumber";
 
 test('Число -100', () => {
-    expect(validationNumber({
-        defaultValue: 5,
-        value: -100
-    })).toStrictEqual(-100);
+    expect(validationNumber(-100, 5))
+        .toStrictEqual(-100);
 });
 
 test('Число 0', () => {
-    expect(validationNumber({
-        defaultValue: 5,
-        value: 0
-    })).toStrictEqual(0);
+    expect(validationNumber(0, 5))
+        .toStrictEqual(0);
 });
 
 test('Число 125', () => {
-    expect(validationNumber({
-        defaultValue: 5,
-        value: 125
-    })).toStrictEqual(125);
+    expect(validationNumber(125, 5))
+        .toStrictEqual(125);
 });
 
 test('defaultValue отсутствует', () => {
-    expect(validationNumber({
-        value: undefined
-    })).toStrictEqual(0);
+    expect(validationNumber(undefined))
+        .toStrictEqual(0);
 });
 
 test('undefined', () => {
-    expect(validationNumber({
-        defaultValue: 5,
-        value: undefined
-    })).toStrictEqual(5);
+    expect(validationNumber(undefined, 5))
+        .toStrictEqual(5);
 });
 
 test('null', () => {
-    expect(validationNumber({
-        defaultValue: 150,
-        value: null
-    })).toStrictEqual(150);
+    expect(validationNumber(null, 150))
+        .toStrictEqual(150);
 });
 
-test('NaN', () => {
-    expect(validationNumber({
-        defaultValue: 5,
-        value: NaN
-    })).toStrictEqual(5);
+test('1. NaN', () => {
+    expect(validationNumber(NaN, 5))
+        .toStrictEqual(5);
 });
 
-test('Некорректное значение valueForValidation - строка', () => {
-    expect(validationNumber({
-        defaultValue: 5,
-        // @ts-ignore
-        value: 'Lala'
-    })).toStrictEqual(5);
+test('2. NaN', () => {
+    expect(validationNumber(Number('string'), 5))
+        .toStrictEqual(5);
 });
 
-test('Некорректное значение valueForValidation - массив', () => {
-    expect(validationNumber({
-        defaultValue: 5,
-        // @ts-ignore
-        value: []
-    })).toStrictEqual(5);
+test('3. NaN', () => {
+    expect(validationNumber(NaN))
+        .toStrictEqual(0);
 });
 
-test('Некорректное значение valueForValidation - объект', () => {
-    expect(validationNumber({
-        defaultValue: 5,
-        // @ts-ignore
-        value: {test: 123}
-    })).toStrictEqual(5);
+test('Некорректное значение value - строка', () => {
+    expect(validationNumber('string', 5))
+        .toStrictEqual(5);
+});
+
+test('Некорректное значение value - массив', () => {
+    expect(validationNumber([], 5))
+        .toStrictEqual(5);
+});
+
+test('Некорректное значение value - объект', () => {
+    expect(validationNumber({ test: 123 }, 5))
+        .toStrictEqual(5);
 });

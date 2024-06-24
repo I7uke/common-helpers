@@ -4,7 +4,7 @@
  * @param date 
  * @returns 
  */
-export default function checkDate(date: any): Date | null {
+export default function checkDate(date: unknown): Date | null {
     if (Object.prototype.toString.call(date) !== '[object Date]') {
         return null;
     }
