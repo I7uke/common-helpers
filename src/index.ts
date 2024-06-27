@@ -4,7 +4,7 @@ export {default as validationNumberArray} from './validationNumberArray';
 export {default as validationNumber} from './validationNumber';
 export {default as numberRounding} from './numberRounding';
 export {default as getUrlParametersParser} from './getUrlParametersParser';
-export {default as getIdFromUrl} from './getIdFromUrl';
+export {default as getLastIdFromUrl} from './getLastIdFromUrl';
 export {default as getFileExtensionByName} from './getFileExtensionByName';
 export {default as fixedLengthString} from './fixedLengthString';
 export {default as dateFormatForView} from './dateFormatForView';

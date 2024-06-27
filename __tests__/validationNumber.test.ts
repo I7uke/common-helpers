@@ -46,16 +46,16 @@ test('3. NaN', () => {
 });
 
 test('Некорректное значение value - строка', () => {
-    expect(validationNumber('string', 5))
+    expect(validationNumber('string' as any, 5))
         .toStrictEqual(5);
 });
 
 test('Некорректное значение value - массив', () => {
-    expect(validationNumber([], 5))
+    expect(validationNumber([] as any, 5))
         .toStrictEqual(5);
 });
 
 test('Некорректное значение value - объект', () => {
-    expect(validationNumber({ test: 123 }, 5))
+    expect(validationNumber({ test: 123 } as any, 5))
         .toStrictEqual(5);
 });

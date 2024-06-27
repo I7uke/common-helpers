@@ -1,34 +1,35 @@
-import { InputOptions } from "./models/inputOptions";
-
 type ValueForConvert = string | number | undefined | null;
 
 /**
- * Перевести строку к числу
- * @param inputOptions
+ * Преобразовать значение к числу
+ * @param value - Значение для преобразования. Если строка, будут удалены все нечисловые символы, запятая заменяется на точку
+ * @param defaultValue - Значение по умолчанию, будет возвращено, если не удалось преобразовать к числу. Если отсутствует, то 0
+ * @returns 
  */
-export default function convertToNumber(options: InputOptions<ValueForConvert, number>): number {
-
-    if (typeof options.value === 'number') {
-        if (isNaN(options.value)) {
-            return options.defaultValue || 0;
+export default function convertToNumber(value: ValueForConvert, defaultValue?: number): number {
+    if (typeof value === 'number') {
+        if (isNaN(value)) {
+            return defaultValue || 0;
         }
 
-        return options.value;
+        return value;
     }
 
-    if (typeof options.value !== 'string') {
-        return options.defaultValue || 0;
+    if (typeof value === 'string') {
+        if (!value) {
+            return defaultValue || 0;
+        }
+
+        const resultReplaceComma: string = value.replace(/,/g, '.');
+        const resultReplaceNonNumeric: string = resultReplaceComma.replace(/[^\d.-]/g, '');
+        const valueNumber = Number(resultReplaceNonNumeric);
+
+        if (isNaN(valueNumber)) {
+            return defaultValue || 0;
+        }
+
+        return valueNumber;
     }
 
-    if (!options.value) {
-        return options.defaultValue || 0;
-    }
-    const valueString: string = options.value.replace(/,/g, '.');
-    const resultNumber: number = Number(valueString);
-
-    if (isNaN(resultNumber)) {
-        return options.defaultValue || 0;
-    }
-
-    return resultNumber;
+    return defaultValue || 0;
 }
