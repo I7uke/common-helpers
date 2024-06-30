@@ -1,3 +1,13 @@
+import checkDate from "./checkDate";
+
+type Format =
+    'dd.mm.yyyy'
+    | 'dd-mm-yyyy'
+    | 'dd.mm.yyyy hh:mm'
+    | 'dd-mm-yyyy hh:mm'
+    | 'dd.mm.yyyy hh:mm:ss'
+    | 'dd-mm-yyyy hh:mm:ss';
+
 type Options = {
     /**
      * Значение по умолчанию, будет возвращено если целевое значение не является датой или является не валидной датой
@@ -10,86 +20,69 @@ type Options = {
     /**
      * Формат даты для вывода
      */
-    readonly format: 'DD.MM.YYYY'
-    | 'DD-MM-YYYY'
-    | 'DD.MM.YYYY HH:MM'
-    | 'DD-MM-YYYY HH:MM'
-    | 'DD.MM.YYYY HH:MM:SS'
-    | 'DD-MM-YYYY HH:MM:SS';
+    readonly format: Format
 }
 
-function validationDefaultValue(inputValue: string | undefined | null): string {
-    const emptyValue: string = '';
-
-    if (typeof inputValue !== 'string') {
-        return emptyValue;
+function addZero(value: string, length: number): string {
+    if (value.length >= length) {
+        return value;
     }
 
-    return inputValue;
+    let result: string = value;
+    const needAdd: number = length - value.length;
+
+    for (let i = 0; i < needAdd; ++i) {
+        result = `0${result}`;
+    }
+
+    return result;
 }
 
-export default function dateFormatForView(inputOptions: Options): string {
+/**
+ * Привести дату к формату для отображения
+ * Если передана не дата или некорректная дата, будет возвращено defaultValue
+ * @param options 
+ * @returns 
+ */
+export default function dateFormatForView(options: Options): string {
+    const date: Date | null = checkDate(options.date);
 
-    if (Object.prototype.toString.call(inputOptions.date) !== '[object Date]') {
-        return validationDefaultValue(inputOptions.defaultValue);
+    if (!date) {
+        return options.defaultValue || '';
     }
 
-    if (isNaN(Number(inputOptions.date))) {
-        return validationDefaultValue(inputOptions.defaultValue);
-    }
-
-    const date: Date = inputOptions.date as Date;
-
-    let day: string = String(date.getDate());
-    if (day.length === 1) {
-        day = '0' + day;
-    }
-
-    let month: string = String(date.getMonth() + 1);
-    if (month.length === 1) {
-        month = '0' + month;
-    }
-
+    const day: string = String(date.getDate());
+    const month: string = String(date.getMonth() + 1);
     const year: string = String(date.getFullYear());
 
-    if (inputOptions.format === 'DD.MM.YYYY') {
-        return `${day}.${month}.${year}`;
+    if (options.format === 'dd.mm.yyyy') {
+        return (`${addZero(day, 2)}.${addZero(month, 2)}.${year}`);
     }
 
-    if (inputOptions.format === 'DD-MM-YYYY') {
-        return `${day}-${month}-${year}`;
+    if (options.format === 'dd-mm-yyyy') {
+        return (`${addZero(day, 2)}-${addZero(month, 2)}-${year}`);
     }
 
-    let hours: string = String(date.getHours());
-    if (hours.length === 1) {
-        hours = '0' + hours;
+    const hours: string = String(date.getHours());
+    const minutes: string = String(date.getMinutes());
+
+    if (options.format === 'dd.mm.yyyy hh:mm') {
+        return (`${addZero(day, 2)}.${addZero(month, 2)}.${year} ${addZero(hours, 2)}:${addZero(minutes, 2)}`);
     }
 
-    let minutes: string = String(date.getMinutes());
-    if (minutes.length === 1) {
-        minutes = '0' + minutes;
+    if (options.format === 'dd-mm-yyyy hh:mm') {
+        return (`${addZero(day, 2)}-${addZero(month, 2)}-${year} ${addZero(hours, 2)}:${addZero(minutes, 2)}`);
     }
 
-    if (inputOptions.format === 'DD.MM.YYYY HH:MM') {
-        return `${day}.${month}.${year} ${hours}:${minutes}`;
+    const seconds: string = String(date.getSeconds());
+
+    if (options.format === 'dd.mm.yyyy hh:mm:ss') {
+        return (`${addZero(day, 2)}.${addZero(month, 2)}.${year} ${addZero(hours, 2)}:${addZero(minutes, 2)}:${addZero(seconds, 2)}`);
     }
 
-    if (inputOptions.format === 'DD-MM-YYYY HH:MM') {
-        return `${day}-${month}-${year} ${hours}:${minutes}`;
+    if (options.format === 'dd-mm-yyyy hh:mm:ss') {
+        return (`${addZero(day, 2)}-${addZero(month, 2)}-${year} ${addZero(hours, 2)}:${addZero(minutes, 2)}:${addZero(seconds, 2)}`);
     }
 
-    let seconds: string = String(date.getSeconds());
-    if (seconds.length === 1) {
-        seconds = '0' + seconds;
-    }
-
-    if (inputOptions.format === 'DD.MM.YYYY HH:MM:SS') {
-        return `${day}.${month}.${year} ${hours}:${minutes}:${seconds}`;
-    }
-
-    if (inputOptions.format === 'DD-MM-YYYY HH:MM:SS') {
-        return `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
-    }
-
-    return validationDefaultValue(inputOptions.defaultValue);
+    return options.defaultValue || '';
 }

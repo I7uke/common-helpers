@@ -1,12 +1,8 @@
-type Options = {
-    /**
-     * Значение для преобразования
-     */
-    readonly value: string | number | null | undefined;
-    /**
-     * Значение по умолчанию, применяется если не удалось выполнить преобразование
-     */
-    readonly defaultValue?: Date | null;
+import checkDate from "./checkDate";
+import { InputOptions } from "./models/inputOptions";
+type ValueForConvert = string | number | null | undefined;
+
+interface Options extends InputOptions<ValueForConvert, Date | null> {
     /**
      * Изменить время полученной даты
      * startDay - Начало дня, hours: 0, min: 0, sec: 0, ms: 0
@@ -15,76 +11,29 @@ type Options = {
     readonly changeTime?: 'startDay' | 'endDay';
 }
 
-function validationDate(date: Date | null | undefined): Date | null {
-    if (Object.prototype.toString.call(date) !== '[object Date]') {
-        return null;
-    }
-
-    if(isNaN(Number(date))) {
-        return null;
-    }
-
-    return date as Date;
-}
-
 /**
- * Преобразовать строку или число к дате
- * @param inputOptions
+ * Преобразовать значение к дате
+ * Если не удастся выполнить преобразования будет возвращено defaultValue, если оно отсутствует, то null 
+ * @param options 
+ * @returns 
  */
 export default function convertToDate(options: Options): Date | null {
-
-    if (!options.value) {
-        return validationDate(options.defaultValue);
+    if(typeof options.value !== 'number' && typeof options.value !== 'string') {
+        return options.defaultValue || null;
     }
 
-    let resultDate: Date | null = null;
+    const resultDate: Date | null = checkDate(new Date(options.value));
 
-    if (typeof options.value === 'string') {
-        const dateString = options.value.trim();
-
-        if (!dateString) {
-            return validationDate(options.defaultValue);
-        }
-
-        const resultDateConvertFromString = new Date(dateString);
-
-        if (isNaN(+resultDateConvertFromString)) {
-            return validationDate(options.defaultValue);
-        }
-
-        resultDate = resultDateConvertFromString;
+    if(!resultDate) {
+        return options.defaultValue || null;
     }
 
-    if (typeof options.value === 'number') {
-        const dateNumber: number = options.value;
-
-        if (dateNumber <= 0) {
-            return validationDate(options.defaultValue);
-        }
-
-        const resultDateConvertFromNumber = new Date(dateNumber);
-
-        if (isNaN(+resultDateConvertFromNumber)) {
-            return validationDate(options.defaultValue);
-        }
-
-        resultDate = resultDateConvertFromNumber;
-    }
-
-    if (!resultDate) {
-        return validationDate(options.defaultValue);
-    }
-
-    if (options.changeTime) {
-        if (options.changeTime === 'startDay') {
-            // Обнуляем время
-            resultDate.setHours(0, 0, 0, 0);
-        }
-
-        if (options.changeTime === 'endDay') {
-            // Ставим 23:59 текущего дня
-            resultDate.setHours(23, 59, 0, 0);
-        }
+    if (options.changeTime === 'startDay') {
+        // Начало дня 00:00
+        resultDate.setHours(0, 0, 0, 0);
+    } else if (options.changeTime === 'endDay') {
+        // Ставим 23:59 текущего дня
+        resultDate.setHours(23, 59, 0, 0);
     }
 
     return resultDate;

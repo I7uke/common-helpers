@@ -1,129 +1,228 @@
 import convertToDate from "../src/convertToDate";
+type TimeChange = 'startDay' | 'endDay';
 
-const defaultValueDate: Date = new Date();
-const testDate = new Date();
-testDate.setUTCMilliseconds(0);
+function getTestDate1(timeChange?: TimeChange): Date {
+    const date = new Date(1719601954000);
 
-const testDateStartDay = new Date(+testDate);
-testDateStartDay.setHours(0, 0, 0, 0);
-const testDateEndDay = new Date(+testDate);
-testDateEndDay.setHours(23, 59, 0, 0);
+    if (timeChange === 'startDay') {
+        date.setHours(0, 0, 0, 0);
+    } else if (timeChange === 'endDay') {
+        date.setHours(23, 59, 0, 0);
+    }
 
-test('timestamp', () => {
+    return date;
+}
+
+function getTestDate2(timeChange?: TimeChange) {
+    const date = new Date(1719525723000);
+
+    if (timeChange === 'startDay') {
+        date.setHours(0, 0, 0, 0);
+    } else if (timeChange === 'endDay') {
+        date.setHours(23, 59, 0, 0);
+    }
+
+    return date;
+}
+
+test('1. Некорректное значение - boolean', () => {
     expect(convertToDate({
-        defaultValue: defaultValueDate,
-        value: +testDate
-    })).toStrictEqual(testDate);
+        value: true as any,
+    })).toStrictEqual(null);
 });
 
-test('ISOS', () => {
+test('2. Некорректное значение - boolean', () => {
     expect(convertToDate({
-        defaultValue: defaultValueDate,
-        value: testDate.toISOString()
-    })).toStrictEqual(testDate);
+        value: true as any,
+        defaultValue: getTestDate1()
+    })).toStrictEqual(getTestDate1());
 });
 
-test('UTC', () => {
+test('1. Некорректное значение - function', () => {
     expect(convertToDate({
-        defaultValue: defaultValueDate,
-        value: testDate.toUTCString()
-    })).toStrictEqual(testDate);
+        //@ts-ignore
+        value: ()=>{},
+    })).toStrictEqual(null);
 });
 
-test('JSON', () => {
+test('2. Некорректное значение - function', () => {
     expect(convertToDate({
-        defaultValue: defaultValueDate,
-        value: testDate.toJSON()
-    })).toStrictEqual(testDate);
+        //@ts-ignore
+        value: () => { },
+        defaultValue: getTestDate1()
+    })).toStrictEqual(getTestDate1());
 });
 
-test('Начало дня', () => {
+test('1. Некорректное значение - object', () => {
     expect(convertToDate({
-        defaultValue: defaultValueDate,
-        value: testDateStartDay.toJSON(),
+        value: {a: 1, b: 2} as any,
+    })).toStrictEqual(null);
+});
+
+test('2. Некорректное значение - object', () => {
+    expect(convertToDate({
+        value: {a: 1, b: 2} as any,
+        defaultValue: getTestDate1()
+    })).toStrictEqual(getTestDate1());
+});
+
+test('1. Некорректное значение - array', () => {
+    expect(convertToDate({
+        value: [1, 2, 3] as any,
+    })).toStrictEqual(null);
+});
+
+test('2. Некорректное значение - array', () => {
+    expect(convertToDate({
+        value: [1, 2, 3] as any,
+        defaultValue: getTestDate1()
+    })).toStrictEqual(getTestDate1());
+});
+
+test('1. undefined', () => {
+    expect(convertToDate({
+        value: undefined,
+    })).toStrictEqual(null);
+});
+
+test('2. undefined', () => {
+    expect(convertToDate({
+        value: undefined,
+        defaultValue: getTestDate1()
+    })).toStrictEqual(getTestDate1());
+});
+
+test('1. null', () => {
+    expect(convertToDate({
+        value: null,
+    })).toStrictEqual(null);
+});
+
+test('2. null', () => {
+    expect(convertToDate({
+        value: null,
+        defaultValue: getTestDate1()
+    })).toStrictEqual(getTestDate1());
+});
+
+test('1. NaN', () => {
+    expect(convertToDate({
+        value: NaN,
+    })).toStrictEqual(null);
+});
+
+test('2. NaN', () => {
+    expect(convertToDate({
+        value: NaN,
+        defaultValue: getTestDate1()
+    })).toStrictEqual(getTestDate1());
+});
+
+
+test('1. value - number', () => {
+    expect(convertToDate({
+        value: +getTestDate1(),
+    })).toStrictEqual(getTestDate1());
+});
+
+test('2. value - number', () => {
+    expect(convertToDate({
+        value: +getTestDate2(),
+    })).toStrictEqual(getTestDate2());
+});
+
+test('3. value - number', () => {
+    expect(convertToDate({
+        value: +getTestDate2(),
+        defaultValue: new Date()
+    })).toStrictEqual(getTestDate2());
+});
+
+test('4. value - number', () => {
+    expect(convertToDate({
+        value: +getTestDate1(),
+        defaultValue: new Date(),
         changeTime: 'startDay'
-    })).toStrictEqual(testDateStartDay);
+    })).toStrictEqual(getTestDate1('startDay'));
 });
 
-test('Конец дня', () => {
+test('5. value - number', () => {
     expect(convertToDate({
-        defaultValue: defaultValueDate,
-        value: testDateEndDay.toJSON(),
+        value: +getTestDate2(),
+        defaultValue: new Date(),
+        changeTime: 'startDay'
+    })).toStrictEqual(getTestDate2('startDay'));
+});
+
+test('6. value - number', () => {
+    expect(convertToDate({
+        value: +getTestDate1(),
+        defaultValue: new Date(),
         changeTime: 'endDay'
-    })).toStrictEqual(testDateEndDay);
+    })).toStrictEqual(getTestDate1('endDay'));
 });
 
-test('Invalid Date', () => {
+test('7. value - number', () => {
     expect(convertToDate({
-        defaultValue: defaultValueDate,
-        value: new Date('Lala').toJSON()
-    })).toStrictEqual(defaultValueDate);
+        value: +getTestDate2(),
+        defaultValue: new Date(),
+        changeTime: 'endDay'
+    })).toStrictEqual(getTestDate2('endDay'));
 });
 
-test('defaultValue null', () => {
+
+test('1. value - string', () => {
     expect(convertToDate({
-        defaultValue: null,
-        value: new Date('Lala').toJSON()
-    })).toStrictEqual(null);
+        value: getTestDate1().toISOString(),
+    })).toStrictEqual(getTestDate1());
 });
 
-test('undefined', () => {
+test('2. value - string', () => {
     expect(convertToDate({
-        defaultValue: defaultValueDate,
-        value: undefined
-    })).toStrictEqual(defaultValueDate);
+        value: getTestDate2().toISOString(),
+    })).toStrictEqual(getTestDate2());
 });
 
-test('null', () => {
+test('3. value - string', () => {
     expect(convertToDate({
-        defaultValue: defaultValueDate,
-        value: null
-    })).toStrictEqual(defaultValueDate);
+        value: getTestDate2().toISOString(),
+        defaultValue: new Date()
+    })).toStrictEqual(getTestDate2());
 });
 
-test('NaN', () => {
+test('4. value - string', () => {
     expect(convertToDate({
-        defaultValue: defaultValueDate,
-        value: NaN
-    })).toStrictEqual(defaultValueDate);
+        value: getTestDate1().toISOString(),
+        defaultValue: new Date(),
+        changeTime: 'startDay'
+    })).toStrictEqual(getTestDate1('startDay'));
 });
 
-test('Некорректное значение - массив', () => {
+test('5. value - string', () => {
     expect(convertToDate({
-        defaultValue: defaultValueDate,
-        // @ts-ignore
-        value: []
-    })).toStrictEqual(defaultValueDate);
+        value: getTestDate2().toISOString(),
+        defaultValue: new Date(),
+        changeTime: 'startDay'
+    })).toStrictEqual(getTestDate2('startDay'));
 });
 
-test('Некорректное значение - массив', () => {
+test('6. value - string', () => {
     expect(convertToDate({
-        defaultValue: defaultValueDate,
-        // @ts-ignore
-        value: [10]
-    })).toStrictEqual(defaultValueDate);
+        value: getTestDate1().toISOString(),
+        defaultValue: new Date(),
+        changeTime: 'endDay'
+    })).toStrictEqual(getTestDate1('endDay'));
 });
 
-test('Некорректное значение - объект', () => {
+test('7. value - string', () => {
     expect(convertToDate({
-        defaultValue: defaultValueDate,
-        // @ts-ignore
-        value: {test: 123}
-    })).toStrictEqual(defaultValueDate);
+        value: getTestDate2().toISOString(),
+        defaultValue: new Date(),
+        changeTime: 'endDay'
+    })).toStrictEqual(getTestDate2('endDay'));
 });
 
-test('Некорректное defaultValue', () => {
-    expect(convertToDate({
-        // @ts-ignore
-        defaultValue: [],
-        // @ts-ignore
-        value: {test: 123}
-    })).toStrictEqual(null);
-});
 
-test('Некорректное значение - число меньше нуля', () => {
-    expect(convertToDate({
-        defaultValue: defaultValueDate,
-        value: -10
-    })).toStrictEqual(defaultValueDate);
-});
+
+
+

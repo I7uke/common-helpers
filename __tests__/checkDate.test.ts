@@ -14,11 +14,11 @@ test('Некорректное значение = массив', () => {
     expect(checkDate([])).toStrictEqual(null);
 });
 
-test('Некорректное значение = массив', () => {
+test('Некорректное значение - массив', () => {
     expect(checkDate([1, 2, 3])).toStrictEqual(null);
 });
 
-test('Некорректное значение = массив', () => {
+test('Некорректное значение - массив', () => {
     expect(checkDate([10])).toStrictEqual(null);
 });
 
