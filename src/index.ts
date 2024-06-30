@@ -7,7 +7,7 @@ export {default as getUrlParametersParser} from './getUrlParametersParser';
 export {default as getLastIdFromUrl} from './getLastIdFromUrl';
 export {default as getFileExtensionByName} from './getFileExtensionByName';
 export {default as fixedLengthString} from './fixedLengthString';
-export {default as dateFormatForView} from './dateFormatForView';
+export {default as dateParser} from './dateParser';
 export {default as convertToNumber} from './convertToNumber';
 export {default as convertToDate} from './convertToDate';
 export {default as checkDate} from './checkDate';

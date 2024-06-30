@@ -7,7 +7,7 @@
     "test": "jest --coverage",
     "test-convertToDate": "jest convertToDate.test.ts --coverage",
     "test-convertToNumber": "jest convertToNumber.test.ts --coverage",
-    "test-dateFormatForView": "jest dateFormatForView.test.ts --coverage",
+    "test-dateParser": "jest dateParser.test.ts --coverage",
     "test-fixedLengthString": "jest fixedLengthString.test.ts --coverage",
     "test-getFileExtensionByName": "jest getFileExtensionByName.test.ts --coverage",
     "test-getLastIdFromUrl": "jest getLastIdFromUrl.test.ts --coverage",
