@@ -20,32 +20,62 @@ test('defaultValue отсутствует', () => {
         .toStrictEqual('');
 });
 
-test('undefined', () => {
+test('value: undefined', () => {
     expect(validationString(undefined, 'string defaultValue'))
         .toStrictEqual('string defaultValue');
 });
 
-test('null', () => {
+test('value: null', () => {
     expect(validationString(null, 'string defaultValue'))
         .toStrictEqual('string defaultValue');
 });
 
-test('Некорректное значение valueForValidation - NaN', () => {
+test('value: NaN', () => {
     expect(validationString(NaN, 'string defaultValue'))
         .toStrictEqual('string defaultValue');
 });
 
-test('Некорректное значение valueForValidation - число', () => {
+test('value: number', () => {
     expect(validationString(123456789, 'string defaultValue'))
         .toStrictEqual('string defaultValue');
 });
 
-test('Некорректное значение valueForValidation - массив', () => {
+test('value: array', () => {
     expect(validationString([], 'string defaultValue'))
         .toStrictEqual('string defaultValue');
 });
 
-test('Некорректное значение valueForValidation - объект', () => {
+test('value: object', () => {
     expect(validationString({ test: 123 }, 'string defaultValue'))
         .toStrictEqual('string defaultValue');
+});
+
+test('1. defaultValue: undefined', () => {
+    expect(validationString(undefined, undefined))
+        .toStrictEqual(undefined);
+});
+
+test('2. defaultValue: undefined', () => {
+    expect(validationString('string', undefined))
+        .toStrictEqual('string');
+});
+
+test('3. defaultValue: undefined', () => {
+    expect(validationString('', undefined))
+        .toStrictEqual('');
+});
+
+test('1. defaultValue: null', () => {
+    expect(validationString(null, null))
+        .toStrictEqual(null);
+});
+
+test('2. defaultValue: null', () => {
+    expect(validationString('string', null))
+        .toStrictEqual('string');
+});
+
+test('3. defaultValue: null', () => {
+    expect(validationString('', null))
+        .toStrictEqual('');
 });

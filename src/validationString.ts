@@ -1,4 +1,4 @@
-type ValueForValidation = string | undefined | null;
+type ValueForValidation = unknown;
 
 /**
  * Проверяет, является ли переданное значение строкой.
@@ -7,9 +7,14 @@ type ValueForValidation = string | undefined | null;
  * @param defaultValue - Значение по умолчанию, будет возвращено, если значение не строка. Если если отстуствует, то пустая строка
  * @returns 
  */
-export default function validationString(value: ValueForValidation, defaultValue?: string): string {
+export default function validationString<T extends string | undefined | null = string>(value: ValueForValidation, defaultValue?: T): string | T {
     if (typeof value !== 'string') {
-        return defaultValue || '';
+
+        if(arguments.length <=1) {
+            return '';
+        }
+
+        return defaultValue as T;
     }
 
     return value.trim();
