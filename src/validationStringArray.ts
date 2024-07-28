@@ -4,7 +4,7 @@
  * Если передан не массив, будет возвращен пустой массив
  * @param arr
  */
-export default function validationStringArray(arr: string[] | unknown): string[] {
+export default function validationStringArray(arr: unknown): string[] {
     const result: string[] = [];
 
     if (!arr) {

@@ -4,7 +4,7 @@
  * Если передан не массив, будет возвращен пустой массив
  * @param arr
  */
-export default function validationNumberArray(arr: number[] | unknown): number[] {
+export default function validationNumberArray(arr: unknown): number[] {
     const result: number[] = [];
 
     if (!arr) {

@@ -1,8 +1,6 @@
 import { InputOptions } from "./models/inputOptions";
 
-type ValueForValidation = number | unknown;
-
-interface Options extends InputOptions<ValueForValidation, number> {
+interface Options extends InputOptions<unknown, number> {
     /**
      * Минимальное значение
      */

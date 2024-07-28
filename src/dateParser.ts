@@ -36,16 +36,22 @@ interface DateParserResult {
 
 /**
  * Разбивает дату, на понятные человеку поля
- * Если передана не дата или некорректная дата будет возвращен undefined
- * Все строковое значения дополняются нулями, например 5 дополнится до вида 05
- * @param date  - дата 
+ * Значение по умолчанию, будет возвращено, если значение не дата
+ * Все строковое значения дополняются недостающими нулями, например месяц 5 будет преобразован в 05
+ * @param date - Дата
+ * @param defaultValue - Значение по умолчанию, будет возвращено, если значение не дата. Если если отсутствует, то undefined
  * @returns 
  */
-export default function dateParser(date: Date | undefined | null): DateParserResult | undefined {
+export default function dateParser<T extends undefined | null = undefined>(date: Date | undefined | null,  defaultValue?: T): DateParserResult | T {
     const validDate: Date | null = checkDate(date);
 
     if (!validDate) {
-        return undefined;
+
+        if(arguments.length <=1) {
+            return undefined as T;
+        }
+
+        return defaultValue as T;
     }
 
     const day: number = validDate.getDate();

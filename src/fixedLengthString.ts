@@ -11,7 +11,7 @@ interface Options extends InputOptions<string | undefined | null, string> {
     readonly isAddDots?: boolean;
 }
 
-function validationMaxLength(num: number | string | null): number {
+function validationMaxLength(num: number | null | undefined): number {
     if (typeof num !== 'number') {
         return 0;
     }
