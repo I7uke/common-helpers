@@ -59,3 +59,34 @@ test('Некорректное значение value - объект', () => {
     expect(validationNumber({ test: 123 } as any, 5))
         .toStrictEqual(5);
 });
+
+
+test('1. defaultValue: undefined', () => {
+    expect(validationNumber(undefined, undefined))
+        .toStrictEqual(undefined);
+});
+
+test('2. defaultValue: undefined', () => {
+    expect(validationNumber(5, undefined))
+        .toStrictEqual(5);
+});
+
+test('3. defaultValue: undefined', () => {
+    expect(validationNumber(0, undefined))
+        .toStrictEqual(0);
+});
+
+test('1. defaultValue: null', () => {
+    expect(validationNumber(null, null))
+        .toStrictEqual(null);
+});
+
+test('2. defaultValue: null', () => {
+    expect(validationNumber(5, null))
+        .toStrictEqual(5);
+});
+
+test('3. defaultValue: null', () => {
+    expect(validationNumber(0, null))
+        .toStrictEqual(0);
+});

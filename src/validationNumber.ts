@@ -1,5 +1,3 @@
-type ValueForValidation = number | null | undefined;
-
 /**
  * Проверяет, является ли переданное значение числом.
  * Значение по умолчанию будет возвращено, если значение не число
@@ -7,9 +5,13 @@ type ValueForValidation = number | null | undefined;
  * @param defaultValue - Значение по умолчанию, будет возвращено, если значение не строка. Если если отстуствует, то 0
  * @returns 
  */
-export default function validationNumber(value: ValueForValidation, defaultValue?: number): number {
+export default function validationNumber<T extends number | undefined | null = number>(value: unknown, defaultValue?: T): number | T {
     if (typeof value !== 'number') {
-        return defaultValue || 0;
+        if(arguments.length <=1) {
+            return 0;
+        }
+
+        return defaultValue as T;
     }
 
     if (isNaN(value)) {
