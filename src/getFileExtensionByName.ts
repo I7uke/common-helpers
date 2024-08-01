@@ -1,34 +1,40 @@
 /**
- * Получить расширение файла по его имени
- * Расширение файла всегда отдается в нижнем регистре
- * Если было передано не корректное имя файла вернет undefined
- * @param fileName - Название файла вида someFile.ext
- */
-export default function getFileExtensionByName(fileName: string | undefined | null): string | undefined {
+  * Получить расширение файла по его имени
+  * Расширение файла всегда отдается в нижнем регистре
+  * Если было передано не корректное имя файла будет возвращено defaultValue
+  * @param fileName - Название файла вида someFile.ext
+  * @param defaultValue - Значение по умолчанию, будет возвращено, если получено некорректное название файла или расширение пустая строка
+  * @returns 
+  */
+export default function getFileExtensionByName<T extends string | undefined | null = string>(fileName: string | undefined | null, defaultValue?: T): string | T {
     if (typeof fileName !== 'string') {
-        return undefined;
+        if (arguments.length <= 1) {
+            return '';
+        }
+
+        return defaultValue as T;
     }
 
     if (!fileName) {
-        return undefined;
+        return defaultValue as T;
     }
 
     if (fileName.length < 3) {
-        return undefined;
+        return defaultValue as T;
     }
 
-    const tmp = fileName.split('.');
+    const index = fileName.lastIndexOf('.');
 
-    if (!tmp.length) {
-        return undefined;
+    if (index < 0) {
+        return defaultValue as T;
     }
 
-    const fileExtension: string = tmp[tmp.length - 1];
+    // Получаем расширение файла, +1, чтобы получить чистое расширение без точки
+    const fileExtension = fileName.substring(index + 1).trim();
 
-    if (fileExtension) {
-        return fileExtension.toLowerCase();
+    if (!fileExtension) {
+        return defaultValue as T;
     }
 
-    return undefined;
+    return fileExtension.toLocaleLowerCase();
 }
-
