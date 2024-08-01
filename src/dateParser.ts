@@ -1,4 +1,4 @@
-import checkDate from "./checkDate";
+import validationDate from "./validationDate";
 
 function addZero(value: number, length: number): string {
     const valueString: string = String(value);
@@ -43,7 +43,7 @@ interface DateParserResult {
  * @returns 
  */
 export default function dateParser<T extends undefined | null = undefined>(date: Date | undefined | null,  defaultValue?: T): DateParserResult | T {
-    const validDate: Date | null = checkDate(date);
+    const validDate = validationDate(date);
 
     if (!validDate) {
 

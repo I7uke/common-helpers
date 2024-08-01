@@ -10,6 +10,6 @@ export {default as fixedLengthString} from './fixedLengthString';
 export {default as dateParser} from './dateParser';
 export {default as convertToNumber} from './convertToNumber';
 export {default as convertToDate} from './convertToDate';
-export {default as checkDate} from './checkDate';
+export {default as validationDate} from './validationDate';
 export {default as getPagination} from './getPagination';
 export {default as validationNumberInRange} from './validationNumberInRange';

@@ -17,7 +17,7 @@
     "test-validationNumberArray": "jest validationNumberArray.test.ts --coverage",
     "test-validationString": "jest validationString.test.ts --coverage",
     "test-validationStringArray": "jest validationStringArray.test.ts --coverage",
-    "test-checkDate": "jest checkDate.test.ts --coverage",
+    "test-validationDate": "jest validationDate.test.ts --coverage",
     "test-getPagination": "jest getPagination.test.ts --coverage",
     "test-validationNumberInRange": "jest validationNumberInRange.test.ts --coverage",
     "build-prod": "rollup --config"
