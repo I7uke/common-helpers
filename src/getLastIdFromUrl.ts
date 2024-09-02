@@ -1,78 +1,61 @@
-interface BaseIdType<TIdString, TIdNumber, TIsEmpty extends boolean> {
-    /**
-     * id - приведенное к
-     */
-    readonly idString: TIdString;
-    /**
-     * id - число
-     */
-    readonly idNumber: TIdNumber;
-    /**
-     * Флаг id отсутствует 
-     */
-    readonly isEmpty: TIsEmpty;
+type ConvertToString = 'string';
+type ConvertToNumber = 'number';
+type ConvertTo = ConvertToString | ConvertToNumber | undefined;
+type ConvertResult<T extends ConvertTo> = T extends ConvertToNumber ? number : string;
+type DefaultValueAvailableType = string | number | undefined | null;
+type DefaultValue<TConvertTo extends ConvertTo, TValue extends DefaultValueAvailableType> = TConvertTo extends ConvertToNumber ? Exclude<TValue, string> : Exclude<TValue, number>;
+
+interface Options<TConvertTo extends ConvertTo, TDefaultValue extends DefaultValueAvailableType> {
+    readonly url: string | undefined | null;
+    readonly defaultValue?: DefaultValue<TConvertTo, TDefaultValue>;
+    readonly convertTo?: TConvertTo;
 }
 
-type ResultId = BaseIdType<string, number | undefined, false>;
-type ResultIdEmpty = BaseIdType<undefined, undefined, true>;
+export default function getLastIdFromUrl<TConvertTo extends ConvertTo = undefined, TDefaultValue extends DefaultValueAvailableType = undefined>(options: Options<TConvertTo, TDefaultValue>): ConvertResult<TConvertTo> | DefaultValue<TConvertTo, TDefaultValue> {
+    const url = options.url;
+    let convertTo: ConvertTo = 'string';
+    let defaultValue: DefaultValue<TConvertTo, TDefaultValue> | undefined = undefined;
 
-function getEmptyValue(): ResultIdEmpty {
-    return {
-        isEmpty: true,
-        idNumber: undefined,
-        idString: undefined
-    };
-}
-
-function convertToNumber(str?: string | undefined | null): number | undefined {
-    if (typeof str !== 'string') {
-        return undefined;
+    if (options.convertTo === 'number') {
+        convertTo = 'number';
     }
 
-    const num: number = Number(str);
-
-    if (isNaN(num)) {
-        return undefined;
+    if (typeof options.defaultValue === 'string'
+        || typeof options.defaultValue === 'number'
+        || options.defaultValue === null
+        || options.defaultValue === undefined) {
+        defaultValue = options.defaultValue;
     }
 
-    return num;
-}
-
-/**
- * Получить из url вида /path/path2/someID последний элемент (someID)
- * @param url - url
- * @returns 
- */
-export default function getLastIdFromUrl(url?: string | undefined | null): ResultId | ResultIdEmpty {
     if (typeof url !== 'string') {
-        return getEmptyValue();
+        return defaultValue as DefaultValue<TConvertTo, TDefaultValue>;
     }
 
     if (!url) {
-        return getEmptyValue();
+        return defaultValue as DefaultValue<TConvertTo, TDefaultValue>;
     }
 
-    const splitArr: string[] = url.split('/');
+    const index = url.lastIndexOf('/');
 
-    if (splitArr.length < 2) {
-        return getEmptyValue();
+    if (index < 0) {
+        return defaultValue as DefaultValue<TConvertTo, TDefaultValue>;
     }
 
-    const lastItem: string | undefined | null = splitArr[splitArr.length - 1];
+    // Получаем id, +1, чтобы получить id без разделителя
+    const idString = url.substring(index + 1).trim();
 
-    if (!lastItem) {
-        return getEmptyValue();
+    if (!idString) {
+        return defaultValue as DefaultValue<TConvertTo, TDefaultValue>;
     }
 
-    const lastItemTrim = lastItem.trim();
+    if (convertTo === 'number') {
+        const idNumber: number = Number(idString);
+        if (isNaN(idNumber)) {
+            return defaultValue as DefaultValue<TConvertTo, TDefaultValue>;
+        }
 
-    if (!lastItemTrim) {
-        return getEmptyValue();
+        return idNumber as ConvertResult<TConvertTo>;
     }
 
-    return {
-        idNumber: convertToNumber(lastItemTrim),
-        idString: lastItemTrim,
-        isEmpty: false
-    }
+    return idString as ConvertResult<TConvertTo>;
 }
