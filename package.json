@@ -20,6 +20,7 @@
     "test-validationDate": "jest validationDate.test.ts --coverage",
     "test-getPagination": "jest getPagination.test.ts --coverage",
     "test-validationNumberInRange": "jest validationNumberInRange.test.ts --coverage",
+    "test-uniqueArray": "jest uniqueArray.test.ts --coverage",
     "build-prod": "rollup --config"
   },
   "main": "./dist",
