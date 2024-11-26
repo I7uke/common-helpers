@@ -1,4 +1,4 @@
-import validationString from "../src/validationString";
+import validationString from "../../src/validators/validationString";
 
 test('Строка', () => {
     expect(validationString('Lorem ipsum dolor sit amet, solum summo platonem has ea', 'string defaultValue'))

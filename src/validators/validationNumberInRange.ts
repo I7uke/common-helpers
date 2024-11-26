@@ -1,4 +1,4 @@
-import { InputOptions } from "./models/inputOptions";
+import { InputOptions } from "../models/inputOptions";
 
 interface Options extends InputOptions<unknown, number> {
     /**

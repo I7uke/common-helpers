@@ -1,4 +1,4 @@
-import validationDate from "./validationDate";
+import validationDate from "./validators/validationDate";
 
 function addZero(value: number, length: number): string {
     const valueString: string = String(value);

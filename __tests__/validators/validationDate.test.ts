@@ -1,4 +1,4 @@
-import validationDate from "../src/validationDate";
+import validationDate from "../../src/validators/validationDate";
 
 const getTestValidDate = () => new Date(1115255105005);
 const getTestInvalidDate = () => new Date('InvalidDate');

@@ -1,4 +1,4 @@
-import checkDate from "./validationDate";
+import checkDate from "./validators/validationDate";
 import { InputOptions } from "./models/inputOptions";
 type ValueForConvert = string | number | null | undefined;
 

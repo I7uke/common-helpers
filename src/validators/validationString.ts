@@ -15,5 +15,5 @@ export default function validationString<T extends string | undefined | null = s
         return defaultValue as T;
     }
 
-    return value.trim();
+    return value;
 }
