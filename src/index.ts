@@ -17,3 +17,5 @@ export { default as uniqueArray } from './uniqueArray';
 export { default as sortArrayString } from './sort/sortArrayString';
 export { default as sortArrayNumber } from './sort/sortArrayNumber';
 export { default as sortArrayDate } from './sort/sortArrayDate';
+export { default as sortArrayBoolean } from './sort/sortArrayBoolean';
+export { default as  sortArrayObjectString} from './sort/sortArrayObjectString';
