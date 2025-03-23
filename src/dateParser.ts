@@ -1,5 +1,3 @@
-import validationDate from "./validators/validationDate";
-
 function addZero(value: number, length: number): string {
     const valueString: string = String(value);
 
@@ -17,65 +15,84 @@ function addZero(value: number, length: number): string {
     return result;
 }
 
-interface DateParserResult {
-    readonly dayNumber: number;
-    readonly monthNumber: number;
-    readonly fullYearNumber: number;
-    readonly hoursNumber: number
-    readonly minutesNumber: number;
-    readonly secondsNumber: number;
-    readonly millisecondsNumber: number;
-    readonly dayString: string;
-    readonly monthString: string;
-    readonly fullYearString: string;
-    readonly hoursString: string
-    readonly minutesString: string;
-    readonly secondsString: string;
-    readonly millisecondsString: string;
+function validationDate(date: Date | undefined | null): Date | undefined {
+    if (Object.prototype.toString.call(date) !== '[object Date]') {
+        return undefined;
+    }
+
+    if (isNaN(Number(date))) {
+        return undefined;
+    }
+
+    return date as Date;
+}
+
+interface DateParse<T extends string | number> {
+    readonly day: T;
+    readonly month: T;
+    readonly fullYear: T;
+    readonly hours: T
+    readonly minutes: T;
+    readonly seconds: T;
+    readonly milliseconds: T;
 }
 
 /**
  * Разбивает дату, на понятные человеку поля
- * Значение по умолчанию, будет возвращено, если значение не дата
- * Все строковое значения дополняются недостающими нулями, например месяц 5 будет преобразован в 05
- * @param date - Дата
- * @param defaultValue - Значение по умолчанию, будет возвращено, если значение не дата. Если если отсутствует, то undefined
+ * @param date - Дата которую нужно парсить
+ * @param defaultValue - Значение по умолчанию, будет возвращено, если date не является датой
  * @returns 
  */
-export default function dateParser<T extends undefined | null = undefined>(date: Date | undefined | null,  defaultValue?: T): DateParserResult | T {
+function toNumber<T extends undefined | null = undefined>(date: Date | undefined | null, defaultValue?: T): Readonly<DateParse<number>> | T {
     const validDate = validationDate(date);
 
     if (!validDate) {
-
-        if(arguments.length <=1) {
+        if (arguments.length <= 1) {
             return undefined as T;
         }
 
         return defaultValue as T;
     }
 
-    const day: number = validDate.getDate();
-    const month: number = validDate.getMonth() + 1;
-    const fullYear: number = validDate.getFullYear();
-    const hours: number = validDate.getHours();
-    const minutes: number = validDate.getMinutes();
-    const seconds: number = validDate.getSeconds();
-    const milliseconds: number = validDate.getMilliseconds();
+    return Object.freeze({
+        day: validDate.getDate(),
+        month: validDate.getMonth() + 1,
+        fullYear: validDate.getFullYear(),
+        hours: validDate.getHours(),
+        minutes: validDate.getMinutes(),
+        seconds: validDate.getSeconds(),
+        milliseconds: validDate.getMilliseconds()
+    });
+}
+
+/**
+ * Разбивает дату, на понятные человеку поля
+ * Все значения дополняются нулями, например месяц 5 будет преобразован в 05
+ * @param date - Дата которую нужно парсить
+ * @param defaultValue - Значение по умолчанию, будет возвращено, если date не является датой
+ * @returns 
+ */
+function toString<T extends undefined | null = undefined>(date: Date | undefined | null,  defaultValue?: T): Readonly<DateParse<string>> | T{
+    const dateNumber = toNumber(date, defaultValue);
+
+    if (!dateNumber) {
+        return dateNumber as T;
+    }
 
     return {
-        dayNumber: day,
-        monthNumber: month,
-        fullYearNumber: fullYear,
-        hoursNumber: hours,
-        minutesNumber: minutes,
-        secondsNumber: seconds,
-        millisecondsNumber: milliseconds,
-        dayString: addZero(day, 2),
-        monthString: addZero(month, 2),
-        fullYearString: String(fullYear),
-        hoursString: addZero(hours, 2),
-        minutesString: addZero(minutes, 2),
-        secondsString: addZero(seconds, 2),
-        millisecondsString: addZero(milliseconds, 3)
+        day: addZero(dateNumber.day, 2),
+        month: addZero(dateNumber.month, 2),
+        fullYear: String(dateNumber.fullYear),
+        hours: addZero(dateNumber.hours, 2),
+        minutes: addZero(dateNumber.minutes, 2),
+        seconds: addZero(dateNumber.seconds, 2),
+        milliseconds: addZero(dateNumber.milliseconds, 3)
     };
 }
+
+const dateParser = Object.freeze({
+    toNumber,
+    toString
+});
+
+export default dateParser
