@@ -1,81 +1,39 @@
 import validationString from "../../src/validators/validationString";
 
-test('Строка', () => {
-    expect(validationString('Lorem ipsum dolor sit amet, solum summo platonem has ea', 'string defaultValue'))
-        .toStrictEqual('Lorem ipsum dolor sit amet, solum summo platonem has ea');
+function testValidValue(string: string, result: string) {
+    expect(validationString(string)).toStrictEqual(result);
+    expect(validationString(string, undefined)).toStrictEqual(result);
+    expect(validationString(string, null)).toStrictEqual(result);
+    expect(validationString(string, 'string defaultValue')).toStrictEqual(result);
+}
+
+test('Некорректные значения', () => {
+    const incorrectValues: any[] = [
+        true,
+        false,
+        () => { },
+        { a: 1, b: 2 },
+        [1, 2, 3],
+        0,
+        10,
+        NaN,
+        new Date('date'),
+        new Date(),
+        undefined,
+        null,
+    ];
+
+    for (const value of incorrectValues) {
+        expect(validationString(value)).toStrictEqual('');
+        expect(validationString(value, undefined)).toStrictEqual(undefined);
+        expect(validationString(value, null)).toStrictEqual(null);
+        expect(validationString(value, 'string defaultValue')).toStrictEqual('string defaultValue');
+    }
 });
 
-test('Пустая строка', () => {
-    expect(validationString('', 'string defaultValue'))
-        .toStrictEqual('');
-});
-
-test('Пустая строка без defaultValue', () => {
-    expect(validationString(''))
-        .toStrictEqual('');
-});
-
-test('defaultValue отсутствует', () => {
-    expect(validationString(undefined))
-        .toStrictEqual('');
-});
-
-test('value: undefined', () => {
-    expect(validationString(undefined, 'string defaultValue'))
-        .toStrictEqual('string defaultValue');
-});
-
-test('value: null', () => {
-    expect(validationString(null, 'string defaultValue'))
-        .toStrictEqual('string defaultValue');
-});
-
-test('value: NaN', () => {
-    expect(validationString(NaN, 'string defaultValue'))
-        .toStrictEqual('string defaultValue');
-});
-
-test('value: number', () => {
-    expect(validationString(123456789, 'string defaultValue'))
-        .toStrictEqual('string defaultValue');
-});
-
-test('value: array', () => {
-    expect(validationString([], 'string defaultValue'))
-        .toStrictEqual('string defaultValue');
-});
-
-test('value: object', () => {
-    expect(validationString({ test: 123 }, 'string defaultValue'))
-        .toStrictEqual('string defaultValue');
-});
-
-test('1. defaultValue: undefined', () => {
-    expect(validationString(undefined, undefined))
-        .toStrictEqual(undefined);
-});
-
-test('2. defaultValue: undefined', () => {
-    expect(validationString('string', undefined))
-        .toStrictEqual('string');
-});
-
-test('3. defaultValue: undefined', () => {
-    expect(validationString('', undefined))
-        .toStrictEqual('');
-});
-
-test('1. defaultValue: null', () => {
-    expect(validationString(null, null))
-        .toStrictEqual(null);
-});
-
-test('2. defaultValue: null', () => {
-    expect(validationString('string', null))
-        .toStrictEqual('string');
-});
-
-test('3. defaultValue: null', () => {
-    expect(validationString('', null))
-        .toStrictEqual('');
+test('Корректная строка', () => {
+    testValidValue('', '');
+    testValidValue('test', 'test');
+    testValidValue('123', '123');
+    testValidValue('Lorem ipsum dolor sit amet, solum summo platonem has ea', 'Lorem ipsum dolor sit amet, solum summo platonem has ea');
 });
