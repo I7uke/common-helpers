@@ -1,92 +1,44 @@
 import validationNumber from "../../src/validators/validationNumber";
 
-test('Число -100', () => {
-    expect(validationNumber(-100, 5))
-        .toStrictEqual(-100);
+function testValidValue(number: number, result: number) {
+    expect(validationNumber(number)).toStrictEqual(result);
+    expect(validationNumber(number, undefined)).toStrictEqual(result);
+    expect(validationNumber(number, null)).toStrictEqual(result);
+    expect(validationNumber(number, 7)).toStrictEqual(result);
+}
+
+test('Некорректные значения', () => {
+    const incorrectValues: any[] = [
+        true,
+        false,
+        () => { },
+        { a: 1, b: 2 },
+        [1, 2, 3],
+        '',
+        ' ',
+        'string',
+        '123',
+        NaN,
+        Number('string'),
+        new Date('date'),
+        new Date(),
+        undefined,
+        null,
+    ];
+
+    for (const value of incorrectValues) {
+        expect(validationNumber(value)).toStrictEqual(0);
+        expect(validationNumber(value, undefined)).toStrictEqual(undefined);
+        expect(validationNumber(value, null)).toStrictEqual(null);
+        expect(validationNumber(value, 7)).toStrictEqual(7);
+    }
 });
 
-test('Число 0', () => {
-    expect(validationNumber(0, 5))
-        .toStrictEqual(0);
-});
-
-test('Число 125', () => {
-    expect(validationNumber(125, 5))
-        .toStrictEqual(125);
-});
-
-test('defaultValue отсутствует', () => {
-    expect(validationNumber(undefined))
-        .toStrictEqual(0);
-});
-
-test('undefined', () => {
-    expect(validationNumber(undefined, 5))
-        .toStrictEqual(5);
-});
-
-test('null', () => {
-    expect(validationNumber(null, 150))
-        .toStrictEqual(150);
-});
-
-test('1. NaN', () => {
-    expect(validationNumber(NaN, 5))
-        .toStrictEqual(5);
-});
-
-test('2. NaN', () => {
-    expect(validationNumber(Number('string'), 5))
-        .toStrictEqual(5);
-});
-
-test('3. NaN', () => {
-    expect(validationNumber(NaN))
-        .toStrictEqual(0);
-});
-
-test('Некорректное значение value - строка', () => {
-    expect(validationNumber('string' as any, 5))
-        .toStrictEqual(5);
-});
-
-test('Некорректное значение value - массив', () => {
-    expect(validationNumber([] as any, 5))
-        .toStrictEqual(5);
-});
-
-test('Некорректное значение value - объект', () => {
-    expect(validationNumber({ test: 123 } as any, 5))
-        .toStrictEqual(5);
-});
-
-
-test('1. defaultValue: undefined', () => {
-    expect(validationNumber(undefined, undefined))
-        .toStrictEqual(undefined);
-});
-
-test('2. defaultValue: undefined', () => {
-    expect(validationNumber(5, undefined))
-        .toStrictEqual(5);
-});
-
-test('3. defaultValue: undefined', () => {
-    expect(validationNumber(0, undefined))
-        .toStrictEqual(0);
-});
-
-test('1. defaultValue: null', () => {
-    expect(validationNumber(null, null))
-        .toStrictEqual(null);
-});
-
-test('2. defaultValue: null', () => {
-    expect(validationNumber(5, null))
-        .toStrictEqual(5);
-});
-
-test('3. defaultValue: null', () => {
-    expect(validationNumber(0, null))
-        .toStrictEqual(0);
+test('Корректное число', () => {
+    testValidValue(-100, -100);
+    testValidValue(-1, -1);
+    testValidValue(0, 0);
+    testValidValue(-0, -0);
+    testValidValue(5, 5);
+    testValidValue(125, 125);
 });

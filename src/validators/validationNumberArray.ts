@@ -7,16 +7,12 @@
 export default function validationNumberArray(arr: unknown): number[] {
     const result: number[] = [];
 
-    if (!arr) {
-        return result;
-    }
-
     if (!Array.isArray(arr)) {
         return result;
     }
 
     for (const item of arr) {
-        if (typeof item === 'number') {
+        if (typeof item === 'number' && !isNaN(item)) {
             result.push(item);
         }
     }

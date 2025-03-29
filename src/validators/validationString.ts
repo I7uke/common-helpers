@@ -7,12 +7,7 @@
  */
 export default function validationString<T extends string | undefined | null = string>(value: unknown, defaultValue?: T): string | T {
     if (typeof value !== 'string') {
-
-        if(arguments.length <=1) {
-            return '';
-        }
-
-        return defaultValue as T;
+        return arguments.length <=1 ? '' : defaultValue as T;
     }
 
     return value;

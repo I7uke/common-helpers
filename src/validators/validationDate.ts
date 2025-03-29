@@ -6,17 +6,11 @@
  * @returns 
  */
 export default function validationDate<T extends Date | undefined | null = undefined>(date: unknown, defaultValue?: T): Date | T {
-    if (Object.prototype.toString.call(date) !== '[object Date]') {
-        if (arguments.length <= 1) {
-            return undefined as T;
+    if (Object.prototype.toString.call(date) === '[object Date]') {
+        if (!isNaN(Number(date))) {
+            return date as Date;  
         }
-
-        return defaultValue as T;
     }
 
-    if (isNaN(Number(date))) {
-        return defaultValue as T;
-    }
-
-    return date as Date;
+    return arguments.length <=1 ? undefined as T : defaultValue as T;
 }

@@ -1,6 +1,6 @@
 import { InputOptions } from "../models/inputOptions";
 
-interface Options extends InputOptions<unknown, number> {
+interface Options<T extends number | undefined | null = number> extends InputOptions<unknown, T> {
     /**
      * Минимальное значение
      */
@@ -9,6 +9,18 @@ interface Options extends InputOptions<unknown, number> {
      * Максимальное значение
      */
     readonly max?: number;
+}
+
+function validationNumber(value: unknown): number | undefined{
+    if (typeof value !== 'number') {
+        return undefined;
+    }
+
+    if( isNaN(value)) {
+        return undefined;
+    }
+
+    return value;
 }
 
 /**
@@ -20,38 +32,33 @@ interface Options extends InputOptions<unknown, number> {
  * Если передан некорректный интервал, например min > max, будет выполнена только проверка является ли value числом
  * @param inputOptions
  */
-export default function validationNumberInRange(options: Options): number {
+export default function validationNumberInRange<T extends number | undefined | null = number>(options: Options<T>): number | T {
+    const value = validationNumber(options.value);
 
-    if (typeof options.value !== 'number') {
-        return options.defaultValue || 0;
+    if (value === undefined) {
+        return options.hasOwnProperty('defaultValue') ? options.defaultValue as T : 0;
     }
 
-    if (isNaN(options.value)) {
-        return options.defaultValue || 0;
-    }
+    const min = validationNumber(options.min);
+    const max = validationNumber(options.max);
 
-    if(typeof options.min === 'number' && typeof options.max === 'number') {
-        if(options.min > options.max) {
-            // Некорректный интервал, min > max
-            return options.value;
+    if (min !== undefined && max !== undefined) {
+        if (min > max) {
+            throw Error('Incorrect interval min > max');
         }
     }
 
-    if (typeof options.min === 'number') {
-        if (!isNaN(options.min)) {
-            if (options.value < options.min) {
-                return options.min;
-            }
+    if (min !== undefined) {
+        if (value < min) {
+            return min;
         }
     }
 
-    if (typeof options.max === 'number') {
-        if (!isNaN(options.max)) {
-            if (options.value > options.max) {
-                return options.max;
-            }
+    if (max !== undefined) {
+        if (value > max) {
+            return max;
         }
     }
 
-    return options.value;
+    return value;
 }

@@ -7,10 +7,6 @@
 export default function validationStringArray(arr: unknown): string[] {
     const result: string[] = [];
 
-    if (!arr) {
-        return result;
-    }
-
     if (!Array.isArray(arr)) {
         return result;
     }
