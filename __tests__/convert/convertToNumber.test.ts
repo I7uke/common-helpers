@@ -10,7 +10,7 @@ function testValidValue(value: Value, result: Value) {
 
 test('Некорректные значения', () => {
     const incorrectValues: any[] = [
-       () => { },
+        () => { },
         { a: 1, b: 2 },
         [1, 2, 3],
         'string',

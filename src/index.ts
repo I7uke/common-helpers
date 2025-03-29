@@ -4,14 +4,15 @@ export { default as validationNumberArray } from './validators/validationNumberA
 export { default as validationNumber } from './validators/validationNumber';
 export { default as validationDate } from './validators/validationDate';
 export { default as validationNumberInRange } from './validators/validationNumberInRange';
+export { default as convertToNumber } from './convert/convertToNumber';
+export { default as convertToDate } from './convert/convertToDate';
+export { default as convertToBoolean } from './convert/convertToBoolean';
 export { default as numberRounding } from './numberRounding';
 export { default as getUrlParametersParser } from './getUrlParametersParser';
 export { default as getLastIdFromUrl } from './getLastIdFromUrl';
 export { default as getFileExtensionByName } from './getFileExtensionByName';
 export { default as fixedLengthString } from './fixedLengthString';
 export { default as dateParser } from './dateParser';
-export { default as convertToNumber } from './convert/convertToNumber';
-export { default as convertToDate } from './convert/convertToDate';
 export { default as getPagination } from './getPagination';
 export { default as uniqueArray } from './uniqueArray';
 export { default as sortArrayString } from './sort/sortArrayString';
