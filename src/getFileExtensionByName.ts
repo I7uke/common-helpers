@@ -7,34 +7,28 @@
   * @returns 
   */
 export default function getFileExtensionByName<T extends string | undefined | null = string>(fileName: string | undefined | null, defaultValue?: T): string | T {
+    const resultDefaultValue = arguments.length <= 1 ? '' : defaultValue as T;
+    
     if (typeof fileName !== 'string') {
-        if (arguments.length <= 1) {
-            return '';
-        }
-
-        return defaultValue as T;
+        return resultDefaultValue;
     }
 
     if (!fileName) {
-        return defaultValue as T;
-    }
-
-    if (fileName.length < 3) {
-        return defaultValue as T;
+        return resultDefaultValue;
     }
 
     const index = fileName.lastIndexOf('.');
 
     if (index < 0) {
-        return defaultValue as T;
+        return resultDefaultValue;
     }
 
     // Получаем расширение файла, +1, чтобы получить чистое расширение без точки
     const fileExtension = fileName.substring(index + 1).trim();
 
     if (!fileExtension) {
-        return defaultValue as T;
+        return resultDefaultValue;
     }
 
-    return fileExtension.toLocaleLowerCase();
+    return fileExtension.toLowerCase();
 }
