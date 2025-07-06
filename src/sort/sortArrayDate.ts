@@ -1,16 +1,33 @@
 import validationDate from "../validators/validationDate";
+import { OrderNumber, OrderOfInvalidValue } from "../models/sorting";
 
-type Order = '09' | '90';
-type OrderOfInvalidValue = 'last' | 'first';
-type Value = Date | undefined | null;
-
-interface Params<T extends Value> {
-    readonly order: Order;
-    readonly array: T[];
+interface Params<T> {
+    /**
+     * Порядок сортировки.
+     */
+    readonly order: OrderNumber;
+    /**
+     *  Массив который нужно отсортировать.
+     */
+    readonly array: (T | Date)[];
+    /**
+     * Где следует расположить все элементы не являющиеся Date. По умолчанию last.
+     */
     readonly orderOfInvalidValue?: OrderOfInvalidValue;
 }
 
-export default function sortArrayDate<T extends Value>(params: Params<T>): T[] {
+function sort09(array: Date[]): Date[] {
+    return array.sort((a: Date, b: Date) => +a - +b);
+}
+
+function sort90(array: Date[]): Date[] {
+    return array.sort((a: Date, b: Date) => +b - +a);
+}
+
+/**
+ * Сортирует значения Date в массиве.
+ */
+export default function sortArrayDate<T>(params: Params<T>): (T | Date)[] {
     if (!Array.isArray(params.array)) {
         return [];
     }
@@ -27,7 +44,7 @@ export default function sortArrayDate<T extends Value>(params: Params<T>): T[] {
         if(validItem) {
             array.push(validItem);
         } else {
-            invalidArray.push(item);
+            invalidArray.push(item as T);
         }
     }
 
@@ -35,19 +52,11 @@ export default function sortArrayDate<T extends Value>(params: Params<T>): T[] {
         return invalidArray as T[];
     }
 
-    const sortArray = params.order === '09' ? sort09(array) : sort90(array);
+    const sortArray = params.order === '0-9' ? sort09(array) : sort90(array);
 
     if(params.orderOfInvalidValue === 'first') {
         return [...invalidArray, ...sortArray] as T[];
     }
 
     return [...sortArray, ...invalidArray] as T[];
-}
-
-function sort09(array: Date[]): Date[] {
-    return array.sort((a: Date, b: Date) => +a - +b);
-}
-
-function sort90(array: Date[]): Date[] {
-    return array.sort((a: Date, b: Date) => +b - +a);
 }

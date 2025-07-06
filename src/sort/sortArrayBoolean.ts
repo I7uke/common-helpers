@@ -1,15 +1,31 @@
-type Order = 'falseTrue' | 'trueFalse';
-type OrderOfInvalidValue = 'last' | 'first';
-type Value = boolean | string | number | object | undefined | null;
+import { OrderBoolean, OrderOfInvalidValue } from "../models/sorting";
 
-interface Params<T extends Value> {
-    readonly order: Order;
-    readonly array: T[];
-    readonly orderOfInvalidValue?: OrderOfInvalidValue;
-    readonly isForceConvert?: boolean;
+//#region arrayBooleanForceConvert
+type Item = boolean | string | number | object | undefined | null;
+
+function sortForceConvertFalseTrue<T extends Item>(array: T[]): T[] {
+    return array.sort((a: T, b: T) =>  !!a === !!b ? 0 : !!a? 1 : -1);
 }
 
-export default function sortArrayBoolean<T extends Value>(params: Params<T>): T[] {
+function sortForceConvertTrueFalse<T extends Item>(array: T[]): T[] {
+    return array.sort((a: T, b: T) => !!a === !!b ? 0 : !!a? -1 : 1);
+}
+
+interface ForceConvertParams<T extends Item> {
+    /**
+     * Порядок сортировки.
+     */
+    readonly order: OrderBoolean;
+    /**
+     * Массив который нужно отсортировать.
+     */
+    readonly array: T[];
+}
+
+/**
+ * Сортирует массив, принудительно приводя элементы к boolean
+ */
+function forceConvert<T extends Item>(params: ForceConvertParams<T>): T[] {
     if (!Array.isArray(params.array)) {
         return [];
     }
@@ -18,12 +34,48 @@ export default function sortArrayBoolean<T extends Value>(params: Params<T>): T[
         return [];
     }
 
-    if(params.isForceConvert) {
-        if(params.order === 'falseTrue') {
-            return sortForceConvertFalseTrue(params.array);
-        }
+    if (params.order === 'false-true') {
+        return sortForceConvertFalseTrue(params.array);
+    }
 
-        return sortForceConvertTrueFalse(params.array);
+    return sortForceConvertTrueFalse(params.array);
+}
+//#endregion
+
+//#region arrayBoolean
+function sortFalseTrue(array: boolean[]): boolean[] {
+    return array.sort((a: boolean, b: boolean) => a === b? 0 : a? 1 : -1);
+}
+
+function sortTrueFalse(array: boolean[]): boolean[] {
+    return array.sort((a: boolean, b: boolean) => a === b? 0 : a? -1 : 1);
+}
+
+interface ArrayBooleanParams<T> {
+    /**
+     * Порядок сортировки.
+     */
+    readonly order: OrderBoolean;
+    /**
+     * Массив который нужно отсортировать.
+     */
+    readonly array: (T | boolean)[];
+    /**
+     * Где следует расположить все элементы не являющиеся boolean. По умолчанию last.
+     */
+    readonly orderOfInvalidValue?: OrderOfInvalidValue;
+}
+
+/**
+ * Сортирует значения boolean в массиве.
+ */
+function arrayBoolean<T>(params: ArrayBooleanParams<T>): (T | boolean)[] {
+    if (!Array.isArray(params.array)) {
+        return [];
+    }
+
+    if (!params.array.length) {
+        return [];
     }
 
     const invalidArray: T[] = [];
@@ -38,30 +90,22 @@ export default function sortArrayBoolean<T extends Value>(params: Params<T>): T[
     }
 
     if(!array.length) {
-        return invalidArray as T[];
+        return invalidArray;
     }
 
-    const sortArray = params.order === 'falseTrue' ? sortFalseTrue(array) : sortTrueFalse(array);
+    const sortArray = params.order === 'false-true' ? sortFalseTrue(array) : sortTrueFalse(array);
 
     if(params.orderOfInvalidValue === 'first') {
-        return [...invalidArray, ...sortArray] as T[];
+        return [...invalidArray, ...sortArray] as (T | boolean)[] ;
     }
 
-    return [...sortArray, ...invalidArray] as T[];
+    return [...sortArray, ...invalidArray] as (T | boolean)[] ;
 }
+//#endregion
 
-function sortFalseTrue(array: boolean[]): boolean[] {
-    return array.sort((a: boolean, b: boolean) => a === b? 0 : a? 1 : -1);
-}
+const sortArrayBoolean = Object.freeze({
+    arrayBoolean,
+    forceConvert
+});
 
-function sortTrueFalse(array: boolean[]): boolean[] {
-    return array.sort((a: boolean, b: boolean) => a === b? 0 : a? -1 : 1);
-}
-
-function sortForceConvertFalseTrue<T extends Value>(array: T[]): T[] {
-    return array.sort((a: T, b: T) =>  !!a === !!b ? 0 : !!a? 1 : -1);
-}
-
-function sortForceConvertTrueFalse<T extends Value>(array: T[]): T[] {
-    return array.sort((a: T, b: T) => !!a === !!b ? 0 : !!a? -1 : 1);
-}
+export default sortArrayBoolean;

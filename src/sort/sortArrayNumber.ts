@@ -1,14 +1,32 @@
-type Order = '09' | '90';
-type OrderOfInvalidValue = 'last' | 'first';
-type Value = number | undefined | null;
+import { OrderNumber, OrderOfInvalidValue } from "../models/sorting";
 
-interface Params<T extends Value> {
-    readonly order: Order;
-    readonly array: T[];
+interface Params<T> {
+    /**
+     * Порядок сортировки.
+     */
+    readonly order: OrderNumber;
+    /**
+     * Массив который нужно отсортировать.
+     */
+    readonly array: (T | number)[];
+    /**
+     * Где следует расположить все элементы не являющиеся number. По умолчанию last.
+     */
     readonly orderOfInvalidValue?: OrderOfInvalidValue;
 }
 
-export default function sortArrayNumber<T extends Value>(params: Params<T>): T[] {
+function sort09(array: number[]): number[] {
+    return array.sort((a: number, b: number) => a - b);
+}
+
+function sort90(array: number[]): number[] {
+    return array.sort((a: number, b: number) => b - a);
+}
+
+/**
+ * Сортирует значения number в массиве.
+ */
+export default function sortArrayNumber<T>(params: Params<T>): (T | number)[] {
     if (!Array.isArray(params.array)) {
         return [];
     }
@@ -20,31 +38,23 @@ export default function sortArrayNumber<T extends Value>(params: Params<T>): T[]
     const invalidArray: T[] = [];
     const array: number[] = [];
 
-    for(const item of params.array) {
-        if(typeof item ==='number' && !isNaN(item)) {
+    for (const item of params.array) {
+        if (typeof item === 'number' && !isNaN(item)) {
             array.push(item);
         } else {
-            invalidArray.push(item);
+            invalidArray.push(item as T);
         }
     }
 
-    if(!array.length) {
+    if (!array.length) {
         return invalidArray as T[];
     }
 
-    const sortArray = params.order === '09' ? sort09(array) : sort90(array);
+    const sortArray = params.order === '0-9' ? sort09(array) : sort90(array);
 
-    if(params.orderOfInvalidValue === 'first') {
+    if (params.orderOfInvalidValue === 'first') {
         return [...invalidArray, ...sortArray] as T[];
     }
 
     return [...sortArray, ...invalidArray] as T[];
-}
-
-function sort09(array: number[]): number[] {
-    return array.sort((a: number, b: number) => a - b);
-}
-
-function sort90(array: number[]): number[] {
-    return array.sort((a: number, b: number) => b - a);
 }

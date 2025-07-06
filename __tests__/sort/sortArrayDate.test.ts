@@ -68,56 +68,56 @@ function helperConvertToString(array: TestArray): string[] {
 test('Некорректное значение Date', () => {
     expect(sortArrayDate({
         array: new Date() as any,
-        order: '09',
+        order: '0-9',
     })).toStrictEqual([]);
 });
 
 test('Некорректное значение string', () => {
     expect(sortArrayDate({
         array: 'string' as any,
-        order: '09',
+        order: '0-9',
     })).toStrictEqual([]);
 });
 
 test('Некорректное значение string', () => {
     expect(sortArrayDate({
         array: 5 as any,
-        order: '09',
+        order: '0-9',
     })).toStrictEqual([]);
 });
 
 test('Некорректное значение object', () => {
     expect(sortArrayDate({
         array: { a: 1, b: 2 } as any,
-        order: '09',
+        order: '0-9',
     })).toStrictEqual([]);
 });
 
 test('Некорректное значение function', () => {
     expect(sortArrayDate({
         array: (() => { }) as any,
-        order: '09',
+        order: '0-9',
     })).toStrictEqual([]);
 });
 
 test('Некорректное значение undefined', () => {
     expect(sortArrayDate({
         array: undefined as any,
-        order: '09',
+        order: '0-9',
     })).toStrictEqual([]);
 });
 
 test('Некорректное значение null', () => {
     expect(sortArrayDate({
         array: undefined as any,
-        order: '09',
+        order: '0-9',
     })).toStrictEqual([]);
 });
 
 test('Пустой массив', () => {
     expect(sortArrayDate({
         array: [],
-        order: '09',
+        order: '0-9',
     })).toStrictEqual([]);
 });
 //#endregion
@@ -127,7 +127,7 @@ test('Массив уже отсортирован 0-9', () => {
     const testData = getTestData1();
     expect(sortArrayDate({
         array:testData.array,
-        order: '09',
+        order: '0-9',
         orderOfInvalidValue: 'first'
     })).toStrictEqual(testData.resultAZInvalidFirst);
 });
@@ -136,7 +136,7 @@ test('Массив уже отсортирован 0-9', () => {
     const testData = getTestData1();
     expect(sortArrayDate({
         array:testData.array,
-        order: '09',
+        order: '0-9',
         orderOfInvalidValue: 'last'
     })).toStrictEqual(testData.resultAZInvalidLast);
 });
@@ -145,7 +145,7 @@ test('Массив уже отсортирован 9-0', () => {
     const testData = getTestData1();
     expect(sortArrayDate({
         array:testData.array,
-        order: '90',
+        order: '9-0',
         orderOfInvalidValue: 'first'
     })).toStrictEqual(testData.resultZAInvalidFirst);
 });
@@ -154,7 +154,7 @@ test('Массив уже отсортирован 9-0', () => {
     const testData = getTestData1();
     expect(sortArrayDate({
         array:testData.array,
-        order: '90',
+        order: '9-0',
         orderOfInvalidValue: 'last'
     })).toStrictEqual(testData.resultZAInvalidLast);
 });
@@ -165,7 +165,7 @@ test('Массив корректных значений 0-9', () => {
     const testData = getTestData2();
     expect(sortArrayDate({
         array:testData.array,
-        order: '09',
+        order: '0-9',
         orderOfInvalidValue: 'first'
     })).toStrictEqual(testData.resultAZInvalidFirst);
 });
@@ -174,7 +174,7 @@ test('Массив корректных значений 0-9', () => {
     const testData = getTestData2();
     expect(sortArrayDate({
         array:testData.array,
-        order: '09',
+        order: '0-9',
         orderOfInvalidValue: 'last'
     })).toStrictEqual(testData.resultAZInvalidLast);
 });
@@ -183,7 +183,7 @@ test('Массив корректных значений 9-0', () => {
     const testData = getTestData2();
     expect(sortArrayDate({
         array:testData.array,
-        order: '90',
+        order: '9-0',
         orderOfInvalidValue: 'first'
     })).toStrictEqual(testData.resultZAInvalidFirst);
 });
@@ -192,7 +192,7 @@ test('Массив корректных значений 9-0', () => {
     const testData = getTestData2();
     expect(sortArrayDate({
         array:testData.array,
-        order: '90',
+        order: '9-0',
         orderOfInvalidValue: 'last'
     })).toStrictEqual(testData.resultZAInvalidLast);
 });
@@ -203,7 +203,7 @@ test('Присутствуют Invalid Date 0-9', () => {
     const testData = getTestData3();
     expect(helperConvertToString(sortArrayDate({
         array:testData.array,
-        order: '09',
+        order: '0-9',
         orderOfInvalidValue: 'first'
     }))).toStrictEqual(helperConvertToString(testData.resultAZInvalidFirst));
 });
@@ -212,7 +212,7 @@ test('Присутствуют Invalid Date 0-9', () => {
     const testData = getTestData3();
     expect(helperConvertToString(sortArrayDate({
         array:testData.array,
-        order: '09',
+        order: '0-9',
         orderOfInvalidValue: 'last'
     }))).toStrictEqual(helperConvertToString(testData.resultAZInvalidLast));
 });
@@ -221,7 +221,7 @@ test('Присутствуют Invalid Date 9-0', () => {
     const testData = getTestData3();
     expect(helperConvertToString(sortArrayDate({
         array:testData.array,
-        order: '90',
+        order: '9-0',
         orderOfInvalidValue: 'first'
     }))).toStrictEqual(helperConvertToString(testData.resultZAInvalidFirst));
 });
@@ -230,7 +230,7 @@ test('Присутствуют Invalid Date 9-0', () => {
     const testData = getTestData3();
     expect(helperConvertToString(sortArrayDate({
         array:testData.array,
-        order: '90',
+        order: '9-0',
         orderOfInvalidValue: 'last'
     }))).toStrictEqual(helperConvertToString(testData.resultZAInvalidLast));
 });
@@ -241,7 +241,7 @@ test('Присутствуют некорректные значения 0-9', (
     const testData = getTestData4();
     expect(helperConvertToString(sortArrayDate({
         array:testData.array,
-        order: '09',
+        order: '0-9',
         orderOfInvalidValue: 'first'
     }))).toStrictEqual(helperConvertToString(testData.resultAZInvalidFirst));
 });
@@ -250,7 +250,7 @@ test('Присутствуют некорректные значения 0-9', (
     const testData = getTestData4();
     expect(helperConvertToString(sortArrayDate({
         array:testData.array,
-        order: '09',
+        order: '0-9',
         orderOfInvalidValue: 'last'
     }))).toStrictEqual(helperConvertToString(testData.resultAZInvalidLast));
 });
@@ -259,7 +259,7 @@ test('Присутствуют некорректные значения 9-0', (
     const testData = getTestData4();
     expect(helperConvertToString(sortArrayDate({
         array:testData.array,
-        order: '90',
+        order: '9-0',
         orderOfInvalidValue: 'first'
     }))).toStrictEqual(helperConvertToString(testData.resultZAInvalidFirst));
 });
@@ -268,7 +268,7 @@ test('Присутствуют некорректные значения 9-0', (
     const testData = getTestData4();
     expect(helperConvertToString(sortArrayDate({
         array:testData.array,
-        order: '90',
+        order: '9-0',
         orderOfInvalidValue: 'last'
     }))).toStrictEqual(helperConvertToString(testData.resultZAInvalidLast));
 });
@@ -279,7 +279,7 @@ test('Все значения некорректные 0-9', () => {
     const testData = getTestData5();
     expect(helperConvertToString(sortArrayDate({
         array:testData.array,
-        order: '09',
+        order: '0-9',
         orderOfInvalidValue: 'first'
     }))).toStrictEqual(helperConvertToString(testData.resultAZInvalidFirst));
 });
@@ -288,7 +288,7 @@ test('Все значения некорректные 0-9', () => {
     const testData = getTestData5();
     expect(helperConvertToString(sortArrayDate({
         array:testData.array,
-        order: '09',
+        order: '0-9',
         orderOfInvalidValue: 'last'
     }))).toStrictEqual(helperConvertToString(testData.resultAZInvalidLast));
 });
@@ -297,7 +297,7 @@ test('Все значения некорректные 9-0', () => {
     const testData = getTestData5();
     expect(helperConvertToString(sortArrayDate({
         array:testData.array,
-        order: '90',
+        order: '9-0',
         orderOfInvalidValue: 'first'
     }))).toStrictEqual(helperConvertToString(testData.resultZAInvalidFirst));
 });
@@ -306,7 +306,7 @@ test('Все значения некорректные 9-0', () => {
     const testData = getTestData5();
     expect(helperConvertToString(sortArrayDate({
         array:testData.array,
-        order: '90',
+        order: '9-0',
         orderOfInvalidValue: 'last'
     }))).toStrictEqual(helperConvertToString(testData.resultZAInvalidLast));
 });

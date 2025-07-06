@@ -1,16 +1,38 @@
-type Order = 'az' | 'za';
-type OrderOfInvalidValue = 'last' | 'first';
-type Value = string | undefined | null;
+import { OrderString, OrderOfInvalidValue } from "../models/sorting";
 
-interface Params<T extends Value> {
-    readonly order: Order;
-    readonly array: T[];
+interface Params<T> {
+    /**
+     * Порядок сортировки.
+     */
+    readonly order: OrderString;
+    /**
+     * Массив который нужно отсортировать.
+     */
+    readonly array: (T | string)[];
+    /**
+     *  Где следует расположить все элементы не являющиеся string. По умолчанию last.
+     */
     readonly orderOfInvalidValue?: OrderOfInvalidValue;
+    /**
+     * Локаль или локали, которые следует использовать
+     */
     readonly locales?: Intl.LocalesArgument;
     readonly options?: Intl.CollatorOptions
 }
 
-export default function sortArrayString<T extends Value>(params: Params<T>): T[] {
+
+function sortAZ(array: string[], collator: Intl.Collator): string[] {
+    return array.sort((a: string, b: string) => collator.compare(a, b));
+}
+
+function sortZA(array: string[], collator: Intl.Collator): string[] {
+    return array.sort((a: string, b: string) => collator.compare(b, a));
+}
+
+/**
+ * Сортирует значения string в массиве.
+ */
+export default function sortArrayString<T>(params: Params<T>): (T | string)[] {
     if (!Array.isArray(params.array)) {
         return [];
     }
@@ -26,7 +48,7 @@ export default function sortArrayString<T extends Value>(params: Params<T>): T[]
         if(typeof item ==='string' && item) {
             array.push(item);
         } else {
-            invalidArray.push(item);
+            invalidArray.push(item as T);
         }
     }
 
@@ -36,21 +58,12 @@ export default function sortArrayString<T extends Value>(params: Params<T>): T[]
 
     const collatorLocales = params?.locales;
     const collatorOptions: Intl.CollatorOptions = params.options ?? { sensitivity: 'base' };
-    const sortArray = params.order === 'za' ? sortZA(array, collatorLocales, collatorOptions) : sortAZ(array, collatorLocales, collatorOptions);
+    const collator = new Intl.Collator(collatorLocales, collatorOptions);
+    const sortArray = params.order === 'z-a' ? sortZA(array, collator) : sortAZ(array, collator);
 
     if(params.orderOfInvalidValue === 'first') {
         return [...invalidArray, ...sortArray] as T[];
     }
 
     return [...sortArray, ...invalidArray] as T[];
-}
-
-function sortAZ(array: string[], locales?:Intl.LocalesArgument, options?: Intl.CollatorOptions): string[] {
-    const collator = new Intl.Collator(locales, options);
-    return array.sort((a: string, b: string) => collator.compare(a, b));
-}
-
-function sortZA(array: string[], locales?:Intl.LocalesArgument, options?: Intl.CollatorOptions): string[] {
-    const collator = new Intl.Collator(locales, options);
-    return array.sort((a: string, b: string) => collator.compare(b, a));
 }

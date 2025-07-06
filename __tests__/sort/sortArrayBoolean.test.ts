@@ -1,363 +1,297 @@
 import sortArrayBoolean from "../../src/sort/sortArrayBoolean";
 
-type TestArray = (boolean | number | string | undefined | null)[];
-
-interface TestData {
-    readonly array: TestArray;
-    readonly resultTrueFalseInvalidFirst: TestArray;
-    readonly resultTrueFalseInvalidLast: TestArray;
-    readonly resultFalseTrueInvalidFirst: TestArray;
-    readonly resultFalseTrueInvalidLast: TestArray;
-}
-
-function getTestData1(): TestData {
-    return {
-        array: [true, true, true, false, false],
-        resultTrueFalseInvalidFirst: [true, true, true, false, false],
-        resultTrueFalseInvalidLast: [true, true, true, false, false],
-        resultFalseTrueInvalidFirst: [false, false, true, true, true],
-        resultFalseTrueInvalidLast: [false, false, true, true, true]
-    }
-};
-
-function getTestData2(): TestData {
-    return {
-        array: [true, false, true, false, true],
-        resultTrueFalseInvalidFirst: [true, true, true, false, false],
-        resultTrueFalseInvalidLast: [true, true, true, false, false],
-        resultFalseTrueInvalidFirst: [false, false, true, true, true],
-        resultFalseTrueInvalidLast: [false, false, true, true, true]
-    }
-};
-
-function getTestData3(): TestData {
-    return {
-        array: [true, 5, false, '', true, false, 0, true, 'string'],
-        resultTrueFalseInvalidFirst: [5, '', 0, 'string', true, true, true, false, false],
-        resultTrueFalseInvalidLast: [true, true, true, false, false, 5, '', 0, 'string'],
-        resultFalseTrueInvalidFirst: [5, '', 0, 'string', false, false, true, true, true],
-        resultFalseTrueInvalidLast: [false, false, true, true, true, 5, '', 0, 'string']
-    }
-};
-
-function getTestData4(): TestData {
-    return {
-        array: [true, 5, null, false, '', true, undefined, false, 0, true, 'string'],
-        resultTrueFalseInvalidFirst: [5, null, '', undefined, 0, 'string', true, true, true, false, false],
-        resultTrueFalseInvalidLast: [true, true, true, false, false, 5, null, '', undefined, 0, 'string'],
-        resultFalseTrueInvalidFirst: [5, null, '', undefined, 0, 'string', false, false, true, true, true],
-        resultFalseTrueInvalidLast: [false, false, true, true, true, 5, null, '', undefined, 0, 'string']
-    }
-};
-
-function getTestData5(): TestData {
-    return {
-        array: [5, '', 0, 'string', NaN, undefined, null],
-        resultTrueFalseInvalidFirst: [5, '', 0, 'string', NaN, undefined, null],
-        resultTrueFalseInvalidLast: [5, '', 0, 'string', NaN, undefined, null],
-        resultFalseTrueInvalidFirst: [5, '', 0, 'string', NaN, undefined, null],
-        resultFalseTrueInvalidLast: [5, '', 0, 'string', NaN, undefined, null]
-    }
-};
-
-function getTestData6(): TestData {
-    return {
-        array: [true, 5, null, false, '', true, undefined, false, 0, true, 'string'],
-        resultTrueFalseInvalidFirst: [true, 5, true, true, 'string', null, false, '', false, 0, undefined],
-        resultTrueFalseInvalidLast: [true, 5, true, true, 'string', null, false, '', false, 0, undefined],
-        resultFalseTrueInvalidFirst: [null, false, '', false, 0, true, 5, true, true, 'string', undefined],
-        resultFalseTrueInvalidLast: [null, false, '', false, 0, true, 5, true, true, 'string', undefined]
-    }
-};
-
 //#region Некорректное значение
-test('Некорректное значение Date', () => {
-    expect(sortArrayBoolean({
-        array: new Date() as any,
-        order: 'falseTrue',
-    })).toStrictEqual([]);
-});
+test('Некорректные значения', () => {
+    const incorrectValues: any[] = [
+        true,
+        false,
+        () => { },
+        { a: 1, b: 2 },
+        -5,
+        0,
+        10,
+        '',
+        ' ',
+        'string',
+        '123',
+        NaN,
+        new Date('InvalidDate'),
+        undefined,
+        null,
+        []
+    ];
 
-test('Некорректное значение string', () => {
-    expect(sortArrayBoolean({
-        array: 'string' as any,
-        order: 'falseTrue',
-    })).toStrictEqual([]);
-});
+    for (const value of incorrectValues) {
+        // arrayBoolean
+        expect(sortArrayBoolean.arrayBoolean({
+            array: value,
+            order: 'false-true',
+        })).toStrictEqual([]);
 
-test('Некорректное значение string', () => {
-    expect(sortArrayBoolean({
-        array: 5 as any,
-        order: 'falseTrue',
-    })).toStrictEqual([]);
-});
+        expect(sortArrayBoolean.arrayBoolean({
+            array: value,
+            order: 'true-false',
+        })).toStrictEqual([]);
 
-test('Некорректное значение object', () => {
-    expect(sortArrayBoolean({
-        array: { a: 1, b: 2 } as any,
-        order: 'falseTrue',
-    })).toStrictEqual([]);
-});
+        expect(sortArrayBoolean.arrayBoolean({
+            array: value,
+            order: 'false-true',
+            orderOfInvalidValue: 'first'
+        })).toStrictEqual([]);
 
-test('Некорректное значение function', () => {
-    expect(sortArrayBoolean({
-        array: (() => { }) as any,
-        order: 'falseTrue',
-    })).toStrictEqual([]);
-});
+        expect(sortArrayBoolean.arrayBoolean({
+            array: value,
+            order: 'true-false',
+            orderOfInvalidValue: 'last'
+        })).toStrictEqual([]);
 
-test('Некорректное значение undefined', () => {
-    expect(sortArrayBoolean({
-        array: undefined as any,
-        order: 'falseTrue',
-    })).toStrictEqual([]);
-});
+        // forceConvert
+        expect(sortArrayBoolean.forceConvert({
+            array: value,
+            order: 'false-true'
+        })).toStrictEqual([]);
 
-test('Некорректное значение null', () => {
-    expect(sortArrayBoolean({
-        array: undefined as any,
-        order: 'falseTrue',
-    })).toStrictEqual([]);
-});
-
-test('Пустой массив', () => {
-    expect(sortArrayBoolean({
-        array: [],
-        order: 'falseTrue',
-    })).toStrictEqual([]);
-});
-//#endregion
-
-//#region Массив уже отсортирован
-test('Массив уже отсортирован true-false', () => {
-    const testData = getTestData1();
-    expect(sortArrayBoolean({
-        array:testData.array,
-        order: 'trueFalse',
-        orderOfInvalidValue: 'first'
-    })).toStrictEqual(testData.resultTrueFalseInvalidFirst);
-});
-
-test('Массив уже отсортирован true-false', () => {
-    const testData = getTestData1();
-    expect(sortArrayBoolean({
-        array:testData.array,
-        order: 'trueFalse',
-        orderOfInvalidValue: 'last'
-    })).toStrictEqual(testData.resultTrueFalseInvalidLast);
-});
-
-test('Массив уже отсортирован false-true', () => {
-    const testData = getTestData1();
-    expect(sortArrayBoolean({
-        array:testData.array,
-        order: 'falseTrue',
-        orderOfInvalidValue: 'first'
-    })).toStrictEqual(testData.resultFalseTrueInvalidFirst);
-});
-
-test('Массив уже отсортирован false-true', () => {
-    const testData = getTestData1();
-    expect(sortArrayBoolean({
-        array:testData.array,
-        order: 'falseTrue',
-        orderOfInvalidValue: 'last'
-    })).toStrictEqual(testData.resultFalseTrueInvalidLast);
+        expect(sortArrayBoolean.forceConvert({
+            array: value,
+            order: 'true-false',
+        })).toStrictEqual([]);
+    }
 });
 //#endregion
 
-//#region Массив корректных значений
-test('Массив корректных значений true-false', () => {
-    const testData = getTestData2();
-    expect(sortArrayBoolean({
-        array:testData.array,
-        order: 'trueFalse',
+
+//#region arrayBoolean
+test('arrayBoolean - Не одно значение не является boolean', () => {
+    const getTestArray = () => [0, '', 5, 'string'];
+
+    // true-false
+    expect(sortArrayBoolean.arrayBoolean({
+        array: getTestArray(),
+        order: 'true-false',
+    })).toStrictEqual(getTestArray());
+
+    expect(sortArrayBoolean.arrayBoolean({
+        array: getTestArray(),
+        order: 'true-false',
         orderOfInvalidValue: 'first'
-    })).toStrictEqual(testData.resultTrueFalseInvalidFirst);
-});
+    })).toStrictEqual(getTestArray());
 
-test('Массив корректных значений true-false', () => {
-    const testData = getTestData2();
-    expect(sortArrayBoolean({
-        array:testData.array,
-        order: 'trueFalse',
+    expect(sortArrayBoolean.arrayBoolean({
+        array: getTestArray(),
+        order: 'true-false',
         orderOfInvalidValue: 'last'
-    })).toStrictEqual(testData.resultTrueFalseInvalidLast);
-});
+    })).toStrictEqual(getTestArray());
 
-test('Массив корректных значений false-true', () => {
-    const testData = getTestData2();
-    expect(sortArrayBoolean({
-        array:testData.array,
-        order: 'falseTrue',
+    // false-true
+    expect(sortArrayBoolean.arrayBoolean({
+        array: getTestArray(),
+        order: 'false-true',
+    })).toStrictEqual(getTestArray());
+
+    expect(sortArrayBoolean.arrayBoolean({
+        array: getTestArray(),
+        order: 'false-true',
         orderOfInvalidValue: 'first'
-    })).toStrictEqual(testData.resultFalseTrueInvalidFirst);
+    })).toStrictEqual(getTestArray());
+
+    expect(sortArrayBoolean.arrayBoolean({
+        array: getTestArray(),
+        order: 'false-true',
+        orderOfInvalidValue: 'last'
+    })).toStrictEqual(getTestArray());
 });
 
-test('Массив корректных значений false-true', () => {
-    const testData = getTestData2();
-    expect(sortArrayBoolean({
-        array:testData.array,
-        order: 'falseTrue',
+test('arrayBoolean - Массив уже отсортирован', () => {
+    const getTestArray1 = () => [true, true, false];
+    const getTestArray2 = () => [false, false, true];
+
+    // true-false
+    expect(sortArrayBoolean.arrayBoolean({
+        array: getTestArray1(),
+        order: 'true-false',
+    })).toStrictEqual(getTestArray1());
+
+    expect(sortArrayBoolean.arrayBoolean({
+        array: getTestArray1(),
+        order: 'true-false',
+        orderOfInvalidValue: 'first'
+    })).toStrictEqual(getTestArray1());
+
+    expect(sortArrayBoolean.arrayBoolean({
+        array: getTestArray1(),
+        order: 'true-false',
         orderOfInvalidValue: 'last'
-    })).toStrictEqual(testData.resultFalseTrueInvalidLast);
+    })).toStrictEqual(getTestArray1());
+
+    // false-true
+    expect(sortArrayBoolean.arrayBoolean({
+        array: getTestArray2(),
+        order: 'false-true',
+    })).toStrictEqual(getTestArray2());
+
+    expect(sortArrayBoolean.arrayBoolean({
+        array: getTestArray2(),
+        order: 'false-true',
+        orderOfInvalidValue: 'first'
+    })).toStrictEqual(getTestArray2());
+
+    expect(sortArrayBoolean.arrayBoolean({
+        array: getTestArray2(),
+        order: 'false-true',
+        orderOfInvalidValue: 'last'
+    })).toStrictEqual(getTestArray2());
+});
+
+test('arrayBoolean - Массив только boolean', () => {
+    const getTestArray = () => [false, true, false];
+    const getResultTrueFalse = () => [true, false, false];
+    const getResultFalseTrue = () => [false, false, true];
+
+    // true-false
+    expect(sortArrayBoolean.arrayBoolean({
+        array: getTestArray(),
+        order: 'true-false',
+    })).toStrictEqual(getResultTrueFalse());
+
+    expect(sortArrayBoolean.arrayBoolean({
+        array: getTestArray(),
+        order: 'true-false',
+        orderOfInvalidValue: 'first'
+    })).toStrictEqual(getResultTrueFalse());
+
+    expect(sortArrayBoolean.arrayBoolean({
+        array: getTestArray(),
+        order: 'true-false',
+        orderOfInvalidValue: 'last'
+    })).toStrictEqual(getResultTrueFalse());
+
+    // false-true
+    expect(sortArrayBoolean.arrayBoolean({
+        array: getTestArray(),
+        order: 'false-true',
+    })).toStrictEqual(getResultFalseTrue());
+
+    expect(sortArrayBoolean.arrayBoolean({
+        array: getTestArray(),
+        order: 'false-true',
+        orderOfInvalidValue: 'first'
+    })).toStrictEqual(getResultFalseTrue());
+
+    expect(sortArrayBoolean.arrayBoolean({
+        array: getTestArray(),
+        order: 'false-true',
+        orderOfInvalidValue: 'last'
+    })).toStrictEqual(getResultFalseTrue());
+});
+
+test('arrayBoolean - В массиве присутствуют другие значения помимо boolean', () => {
+    const getTestArray = () => [0, false, '', true, 'string', 5, false];
+    const getResultTrueFalse = () => [true, false, false];
+    const getResultFalseTrue = () => [false, false, true];
+    const getResultInvalidItems = () => [0, '', 'string', 5];
+
+    // true-false
+    expect(sortArrayBoolean.arrayBoolean({
+        array: getTestArray(),
+        order: 'true-false',
+    })).toStrictEqual([...getResultTrueFalse(), ...getResultInvalidItems()]);
+
+    expect(sortArrayBoolean.arrayBoolean({
+        array: getTestArray(),
+        order: 'true-false',
+        orderOfInvalidValue: 'first'
+    })).toStrictEqual([...getResultInvalidItems(), ...getResultTrueFalse()]);
+
+    expect(sortArrayBoolean.arrayBoolean({
+        array: getTestArray(),
+        order: 'true-false',
+        orderOfInvalidValue: 'last'
+    })).toStrictEqual([...getResultTrueFalse(), ...getResultInvalidItems()]);
+
+    // false-true
+    expect(sortArrayBoolean.arrayBoolean({
+        array: getTestArray(),
+        order: 'false-true',
+    })).toStrictEqual([...getResultFalseTrue(), ...getResultInvalidItems()]);
+
+    expect(sortArrayBoolean.arrayBoolean({
+        array: getTestArray(),
+        order: 'false-true',
+        orderOfInvalidValue: 'first'
+    })).toStrictEqual([...getResultInvalidItems(), ...getResultFalseTrue()]);
+
+    expect(sortArrayBoolean.arrayBoolean({
+        array: getTestArray(),
+        order: 'false-true',
+        orderOfInvalidValue: 'last'
+    })).toStrictEqual([...getResultFalseTrue(), ...getResultInvalidItems()]);
 });
 //#endregion
 
-//#region Присутствуют другие типы кроме boolean
-test('1. Присутствуют другие типы кроме boolean true-false', () => {
-    const testData = getTestData3();
-    expect(sortArrayBoolean({
-        array:testData.array,
-        order: 'trueFalse',
-        orderOfInvalidValue: 'first'
-    })).toStrictEqual(testData.resultTrueFalseInvalidFirst);
+
+//#region forceConvert
+test('forceConvert - Массив уже отсортирован', () => {
+    const getTestArray1 = () => [true, true, false];
+    const getTestArray2 = () => [false, false, true];
+    const getTestArray3 = () => [true, true, 'string', 5, false, 0, ''];
+    const getTestArray4 = () => ['', 0, false, 5, 'string', true, true];
+
+    // true-false
+    expect(sortArrayBoolean.forceConvert({
+        array: getTestArray1(),
+        order: 'true-false',
+    })).toStrictEqual(getTestArray1());
+
+    expect(sortArrayBoolean.forceConvert({
+        array: getTestArray3(),
+        order: 'true-false',
+    })).toStrictEqual(getTestArray3());
+
+    // false-true
+    expect(sortArrayBoolean.forceConvert({
+        array: getTestArray2(),
+        order: 'false-true',
+    })).toStrictEqual(getTestArray2());
+
+    expect(sortArrayBoolean.forceConvert({
+        array: getTestArray4(),
+        order: 'false-true',
+    })).toStrictEqual(getTestArray4());
 });
 
-test('1. Присутствуют другие типы кроме boolean true-false', () => {
-    const testData = getTestData3();
-    expect(sortArrayBoolean({
-        array:testData.array,
-        order: 'trueFalse',
-        orderOfInvalidValue: 'last'
-    })).toStrictEqual(testData.resultTrueFalseInvalidLast);
+test('forceConvert - Массив только boolean', () => {
+    const getTestArray = () => [false, true, false];
+    const getResultTrueFalse = () => [true, false, false];
+    const getResultFalseTrue = () => [false, false, true];
+
+    // true-false
+    expect(sortArrayBoolean.forceConvert({
+        array: getTestArray(),
+        order: 'true-false',
+    })).toStrictEqual(getResultTrueFalse());
+
+    // false-true
+    expect(sortArrayBoolean.forceConvert({
+        array: getTestArray(),
+        order: 'false-true',
+    })).toStrictEqual(getResultFalseTrue());
 });
 
-test('1. Присутствуют другие типы кроме boolean false-true', () => {
-    const testData = getTestData3();
-    expect(sortArrayBoolean({
-        array:testData.array,
-        order: 'falseTrue',
-        orderOfInvalidValue: 'first'
-    })).toStrictEqual(testData.resultFalseTrueInvalidFirst);
-});
+test('forceConvert - В массиве присутствуют другие значения помимо boolean', () => {
+    const getTestArray = () => [0, false, '', true, 'string', 5, false];
+    const getResultTrueFalse = () => [ true, 'string', 5, 0, false, '', false];
+    const getResultFalseTrue = () => [0, false, '', false, true, 'string', 5];
 
-test('1. Присутствуют другие типы кроме boolean false-true', () => {
-    const testData = getTestData3();
-    expect(sortArrayBoolean({
-        array:testData.array,
-        order: 'falseTrue',
-        orderOfInvalidValue: 'last'
-    })).toStrictEqual(testData.resultFalseTrueInvalidLast);
-});
-//#endregion
+    // true-false
+    expect(sortArrayBoolean.forceConvert({
+        array: getTestArray(),
+        order: 'true-false',
+    })).toStrictEqual(getResultTrueFalse());
 
-//#region 2. Присутствуют другие типы кроме boolean
-test('2. Присутствуют другие типы кроме boolean true-false', () => {
-    const testData = getTestData4();
-    expect(sortArrayBoolean({
-        array:testData.array,
-        order: 'trueFalse',
-        orderOfInvalidValue: 'first'
-    })).toStrictEqual(testData.resultTrueFalseInvalidFirst);
-});
-
-test('2. Присутствуют другие типы кроме boolean true-false', () => {
-    const testData = getTestData4();
-    expect(sortArrayBoolean({
-        array:testData.array,
-        order: 'trueFalse',
-        orderOfInvalidValue: 'last'
-    })).toStrictEqual(testData.resultTrueFalseInvalidLast);
-});
-
-test('2. Присутствуют другие типы кроме boolean false-true', () => {
-    const testData = getTestData4();
-    expect(sortArrayBoolean({
-        array:testData.array,
-        order: 'falseTrue',
-        orderOfInvalidValue: 'first'
-    })).toStrictEqual(testData.resultFalseTrueInvalidFirst);
-});
-
-test('2. Присутствуют другие типы кроме boolean false-true', () => {
-    const testData = getTestData4();
-    expect(sortArrayBoolean({
-        array:testData.array,
-        order: 'falseTrue',
-        orderOfInvalidValue: 'last'
-    })).toStrictEqual(testData.resultFalseTrueInvalidLast);
-});
-//#endregion
-
-//#region Все значения не boolean
-test('Все значения не boolean true-false', () => {
-    const testData = getTestData5();
-    expect(sortArrayBoolean({
-        array:testData.array,
-        order: 'trueFalse',
-        orderOfInvalidValue: 'first'
-    })).toStrictEqual(testData.resultTrueFalseInvalidFirst);
-});
-
-test('Все значения не boolean true-false', () => {
-    const testData = getTestData5();
-    expect(sortArrayBoolean({
-        array:testData.array,
-        order: 'trueFalse',
-        orderOfInvalidValue: 'last'
-    })).toStrictEqual(testData.resultTrueFalseInvalidLast);
-});
-
-test('Все значения не boolean false-true', () => {
-    const testData = getTestData5();
-    expect(sortArrayBoolean({
-        array:testData.array,
-        order: 'falseTrue',
-        orderOfInvalidValue: 'first'
-    })).toStrictEqual(testData.resultFalseTrueInvalidFirst);
-});
-
-test('Все значения не boolean false-true', () => {
-    const testData = getTestData5();
-    expect(sortArrayBoolean({
-        array:testData.array,
-        order: 'falseTrue',
-        orderOfInvalidValue: 'last'
-    })).toStrictEqual(testData.resultFalseTrueInvalidLast);
-});
-//#endregion
-
-//#region Преобразовать к boolean
-test('Преобразовать к boolean true-false', () => {
-    const testData = getTestData6();
-    expect(sortArrayBoolean({
-        array:testData.array,
-        order: 'trueFalse',
-        orderOfInvalidValue: 'first',
-        isForceConvert: true
-    })).toStrictEqual(testData.resultTrueFalseInvalidFirst);
-});
-
-test('Преобразовать к boolean true-false', () => {
-    const testData = getTestData6();
-
-    expect(sortArrayBoolean({
-        array:testData.array,
-        order: 'trueFalse',
-        orderOfInvalidValue: 'last',
-        isForceConvert: true
-    })).toStrictEqual(testData.resultTrueFalseInvalidLast);
-});
-
-test('Преобразовать к boolean false-true', () => {
-    const testData = getTestData6();
-
-    expect(sortArrayBoolean({
-        array:testData.array,
-        order: 'falseTrue',
-        orderOfInvalidValue: 'first',
-        isForceConvert: true
-    })).toStrictEqual(testData.resultFalseTrueInvalidFirst);
-});
-
-test('Преобразовать к boolean false-true', () => {
-    const testData = getTestData6();
-    expect(sortArrayBoolean({
-        array:testData.array,
-        order: 'falseTrue',
-        orderOfInvalidValue: 'last',
-        isForceConvert: true
-    })).toStrictEqual(testData.resultFalseTrueInvalidLast);
+    // false-true
+    expect(sortArrayBoolean.forceConvert({
+        array: getTestArray(),
+        order: 'false-true',
+    })).toStrictEqual(getResultFalseTrue());
 });
 //#endregion
