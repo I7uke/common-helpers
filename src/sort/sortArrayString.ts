@@ -2,9 +2,9 @@ import { OrderString, OrderOfInvalidValue } from "../models/sorting";
 
 interface Params<T> {
     /**
-     * Порядок сортировки.
+     * Порядок сортировки. По умолчанию a-z
      */
-    readonly order: OrderString;
+    readonly order?: OrderString;
     /**
      * Массив который нужно отсортировать.
      */
