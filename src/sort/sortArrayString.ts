@@ -1,4 +1,4 @@
-import { OrderString, OrderOfInvalidValue } from "../models/sorting";
+import { type OrderString, type OrderOfInvalidValue } from "../models/sorting";
 
 interface Params<T> {
     /**

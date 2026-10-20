@@ -1,4 +1,4 @@
-import { InputOptions } from "./models/inputOptions";
+import {type InputOptions } from "./models/inputOptions";
 
 interface Options<T extends string | null | undefined = string> extends InputOptions<string | undefined | null, T> {
     /**

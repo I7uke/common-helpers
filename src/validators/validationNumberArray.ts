@@ -12,7 +12,7 @@ export default function validationNumberArray(arr: unknown): number[] {
     }
 
     for (const item of arr) {
-        if (typeof item === 'number' && !isNaN(item)) {
+        if (typeof item === 'number' && !Number.isNaN(item)) {
             result.push(item);
         }
     }

@@ -1,4 +1,4 @@
-import { InputOptions } from "../models/inputOptions";
+import {type InputOptions } from "../models/inputOptions";
 
 interface Options<T extends number | undefined | null = number> extends InputOptions<unknown, T> {
     /**
@@ -24,40 +24,38 @@ function validationNumber(value: unknown): number | undefined{
 }
 
 /**
- * Проверить принадлежит ли число диапазону [min, max]
- * Значение по умолчанию, будет возвращено, если число для проверки не являлось числом
- * Если число меньше min будет возвращен min
- * Если число больше max будет возвращен max
- * Если min и max отсутствуют, будет выполнена только проверка является ли value числом
- * Если передан некорректный интервал, например min > max, будет выполнена только проверка является ли value числом
- * @param inputOptions
+ * Проверить принадлежность числа диапазону [min, max].
+ *
+ * Если value не является числом, вернуть defaultValue или 0.
+ * Если value меньше min, вернуть min.
+ * Если value больше max, вернуть max.
+ * Если min и max отсутствуют, проверить только value.
+ * Если min > max, выбросить ошибку.
  */
-export default function validationNumberInRange<T extends number | undefined | null = number>(options: Options<T>): number | T {
+export default function validationNumberInRange<T extends number | undefined | null = number>(
+    options: Options<T>,
+): number | T {
     const value = validationNumber(options.value);
 
     if (value === undefined) {
-        return options.hasOwnProperty('defaultValue') ? options.defaultValue as T : 0;
+        return Object.prototype.hasOwnProperty.call(options, 'defaultValue')
+            ? options.defaultValue as T
+            : 0;
     }
 
     const min = validationNumber(options.min);
     const max = validationNumber(options.max);
 
-    if (min !== undefined && max !== undefined) {
-        if (min > max) {
-            throw Error('Incorrect interval min > max');
-        }
+    if (min !== undefined && max !== undefined && min > max) {
+        throw Error('Incorrect interval min > max');
     }
 
-    if (min !== undefined) {
-        if (value < min) {
-            return min;
-        }
+    if (min !== undefined && value < min) {
+        return min;
     }
 
-    if (max !== undefined) {
-        if (value > max) {
-            return max;
-        }
+    if (max !== undefined && value > max) {
+        return max;
     }
 
     return value;

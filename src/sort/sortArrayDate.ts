@@ -1,5 +1,5 @@
 import validationDate from "../validators/validationDate";
-import { OrderNumber, OrderOfInvalidValue } from "../models/sorting";
+import { type OrderNumber, type OrderOfInvalidValue } from "../models/sorting";
 
 interface Params<T> {
     /**

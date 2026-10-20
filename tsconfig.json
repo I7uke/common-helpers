@@ -1,28 +1,39 @@
 {
   "compilerOptions": {
-    "experimentalDecorators": true,
-    "lib": ["dom","dom.iterable", "esnext"],
+    "lib": [
+      "es2020"
+    ],
+    "types": [
+      "jest",
+      "node"
+    ],
+    "noEmit": true,
     "noImplicitAny": true,
     "target": "ES2020",
     "module": "ESNext",
     "sourceMap": false,
     "declaration": true,
     "declarationDir": "./dist",
-    "moduleResolution": "node",
-    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "bundler",
     "strict": true,
-    "jsx": "react-jsx",
+    "noImplicitOverride": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "noFallthroughCasesInSwitch": true,
+    "forceConsistentCasingInFileNames": true,
     "useDefineForClassFields": true,
     "isolatedModules": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "noFallthroughCasesInSwitch": true,
-    "resolveJsonModule": true
+    "verbatimModuleSyntax": true,
+    "noEmitOnError": true,
   },
+  "include": [
+    "src/**/*.ts",
+    "__tests__/**/*.ts"
+  ],
   "exclude": [
     "node_modules",
-    "__tests__/",
     "dist",
     "coverage"
   ]

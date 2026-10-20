@@ -1,4 +1,4 @@
-import { FieldExtractor } from "../models/fieldExtractor";
+import { type FieldExtractor } from "../models/fieldExtractor";
 type Order = 'az' | 'za';
 type OrderOfInvalidValue = 'last' | 'first';
 type Item = object;

@@ -1,4 +1,4 @@
-import { OrderBoolean, OrderOfInvalidValue } from "../models/sorting";
+import { type OrderBoolean, type OrderOfInvalidValue } from "../models/sorting";
 
 //#region arrayBooleanForceConvert
 type Item = boolean | string | number | object | undefined | null;

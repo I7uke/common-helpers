@@ -1,12 +1,13 @@
+export { default as toBoolean } from './convert/toBoolean';
+export { default as toBooleanTruthy } from './convert/toBooleanTruthy';
+export { default as toDate } from './convert/toDate';
+export { default as toNumber } from './convert/toNumber';
 export { default as validationStringArray } from './validators/validationStringArray';
 export { default as validationString } from './validators/validationString';
 export { default as validationNumberArray } from './validators/validationNumberArray';
 export { default as validationNumber } from './validators/validationNumber';
 export { default as validationDate } from './validators/validationDate';
 export { default as validationNumberInRange } from './validators/validationNumberInRange';
-export { default as convertToNumber } from './convert/convertToNumber';
-export { default as convertToDate } from './convert/convertToDate';
-export { default as convertToBoolean } from './convert/convertToBoolean';
 export { default as numberRounding } from './numberRounding';
 export { default as getUrlParametersParser } from './getUrlParametersParser';
 export { default as getLastIdFromUrl } from './getLastIdFromUrl';

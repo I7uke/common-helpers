@@ -17,11 +17,11 @@ type PagesResult = {
     /**
      * Показывать последнюю страницу или нет
      */
-    readonly firstPage?: number;
+    readonly firstPage?: number | undefined;
     /**
      * Показывать первую страницу или нет
      */
-    readonly lastPage?: number;
+    readonly lastPage?: number | undefined;
     /**
      * Список страниц пагинации
      */
@@ -113,7 +113,7 @@ export default function getPagination(options: Options): PagesResult {
             pages: [],
             firstPage: undefined,
             lastPage: undefined
-        };
+        } as PagesResult;
     }
 
     let firstPage: number | undefined = undefined;
@@ -144,5 +144,5 @@ export default function getPagination(options: Options): PagesResult {
         pages: pagesResult,
         firstPage: firstPage,
         lastPage: lastPage
-    };
+    } as PagesResult;
 }
