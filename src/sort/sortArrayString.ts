@@ -1,26 +1,5 @@
 import { type OrderString, type OrderOfInvalidValue } from "../models/sorting";
 
-interface Params<T> {
-    /**
-     * Порядок сортировки. По умолчанию a-z
-     */
-    readonly order?: OrderString;
-    /**
-     * Массив который нужно отсортировать.
-     */
-    readonly array: (T | string)[];
-    /**
-     *  Где следует расположить все элементы не являющиеся string. По умолчанию last.
-     */
-    readonly orderOfInvalidValue?: OrderOfInvalidValue;
-    /**
-     * Локаль или локали, которые следует использовать
-     */
-    readonly locales?: Intl.LocalesArgument;
-    readonly options?: Intl.CollatorOptions
-}
-
-
 function sortAZ(array: string[], collator: Intl.Collator): string[] {
     return array.sort((a: string, b: string) => collator.compare(a, b));
 }
@@ -29,41 +8,37 @@ function sortZA(array: string[], collator: Intl.Collator): string[] {
     return array.sort((a: string, b: string) => collator.compare(b, a));
 }
 
-/**
- * Сортирует значения string в массиве.
- */
-export default function sortArrayString<T>(params: Params<T>): (T | string)[] {
-    if (!Array.isArray(params.array)) {
+export default function sortArrayString<T>(array: T[], order: OrderString, orderOfInvalidValue?: OrderOfInvalidValue, locales?: Intl.LocalesArgument, options?: Intl.CollatorOptions): T[] {
+    if (!Array.isArray(array)) {
         return [];
     }
 
-    if (!params.array.length) {
+    if (!array.length) {
         return [];
     }
 
-    const invalidArray: T[] = [];
-    const array: string[] = [];
+    const nonStringArray: T[] = [];
+    const stringArray: string[] = [];
 
-    for(const item of params.array) {
+    for(const item of array) {
         if(typeof item ==='string' && item) {
-            array.push(item);
+            stringArray.push(item);
         } else {
-            invalidArray.push(item as T);
+            nonStringArray.push(item);
         }
     }
 
-    if(!array.length) {
-        return invalidArray as T[];
+    if(!stringArray.length) {
+        return nonStringArray;
     }
 
-    const collatorLocales = params?.locales;
-    const collatorOptions: Intl.CollatorOptions = params.options ?? { sensitivity: 'base' };
-    const collator = new Intl.Collator(collatorLocales, collatorOptions);
-    const sortArray = params.order === 'z-a' ? sortZA(array, collator) : sortAZ(array, collator);
+    const collatorOptions: Intl.CollatorOptions = options ?? { sensitivity: 'base' };
+    const collator = new Intl.Collator(locales, collatorOptions);
+    const sortArray = order === 'z-a' ? sortZA(stringArray, collator) : sortAZ(stringArray, collator);
 
-    if(params.orderOfInvalidValue === 'first') {
-        return [...invalidArray, ...sortArray] as T[];
+    if(orderOfInvalidValue === 'first') {
+        return [...nonStringArray, ...sortArray] as T[];
     }
 
-    return [...sortArray, ...invalidArray] as T[];
+    return [...sortArray, ...nonStringArray] as T[];
 }

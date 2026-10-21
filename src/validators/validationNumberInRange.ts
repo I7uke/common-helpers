@@ -4,11 +4,11 @@ interface Options<T extends number | undefined | null = number> extends InputOpt
     /**
      * Минимальное значение
      */
-    readonly min?: number;
+    readonly min?: number | undefined;
     /**
      * Максимальное значение
      */
-    readonly max?: number;
+    readonly max?: number | undefined;
 }
 
 function validationNumber(value: unknown): number | undefined{

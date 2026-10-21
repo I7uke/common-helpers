@@ -1,19 +1,13 @@
-import validationDate from "../validators/validationDate";
 import { type OrderNumber, type OrderOfInvalidValue } from "../models/sorting";
 
-interface Params<T> {
-    /**
-     * Порядок сортировки.
-     */
-    readonly order: OrderNumber;
-    /**
-     *  Массив который нужно отсортировать.
-     */
-    readonly array: (T | Date)[];
-    /**
-     * Где следует расположить все элементы не являющиеся Date. По умолчанию last.
-     */
-    readonly orderOfInvalidValue?: OrderOfInvalidValue;
+function validationDate(date: unknown): Date | undefined {
+    if (Object.prototype.toString.call(date) === '[object Date]') {
+        if (!Number.isNaN(Date.prototype.getTime.call(date))) {
+            return date as Date;  
+        }
+    }
+
+    return undefined;
 }
 
 function sort09(array: Date[]): Date[] {
@@ -24,39 +18,36 @@ function sort90(array: Date[]): Date[] {
     return array.sort((a: Date, b: Date) => +b - +a);
 }
 
-/**
- * Сортирует значения Date в массиве.
- */
-export default function sortArrayDate<T>(params: Params<T>): (T | Date)[] {
-    if (!Array.isArray(params.array)) {
+export default function sortArrayDate<T>(array: T[], order: OrderNumber, orderOfInvalidValue?: OrderOfInvalidValue): T [] {
+    if (!Array.isArray(array)) {
         return [];
     }
 
-    if (!params.array.length) {
+    if (!array.length) {
         return [];
     }
 
-    const invalidArray: T[] = [];
-    const array: Date[] = [];
+    const nonDateArray: T[] = [];
+    const dateArray: Date[] = [];
 
-    for(const item of params.array) {
+    for(const item of array) {
         const validItem = validationDate(item);
         if(validItem) {
-            array.push(validItem);
+            dateArray.push(validItem);
         } else {
-            invalidArray.push(item as T);
+            nonDateArray.push(item);
         }
     }
 
-    if(!array.length) {
-        return invalidArray as T[];
+    if(!dateArray.length) {
+        return nonDateArray as T[];
     }
 
-    const sortArray = params.order === '0-9' ? sort09(array) : sort90(array);
+    const sortArray = order === '0-9' ? sort09(dateArray) : sort90(dateArray);
 
-    if(params.orderOfInvalidValue === 'first') {
-        return [...invalidArray, ...sortArray] as T[];
+    if(orderOfInvalidValue === 'first') {
+        return [...nonDateArray, ...sortArray] as T[];
     }
 
-    return [...sortArray, ...invalidArray] as T[];
+    return [...sortArray, ...nonDateArray] as T[];
 }
