@@ -1,13 +1,5 @@
 import type { OrderBoolean } from "../models/sorting";
 
-function sortForceConvertFalseTrue<T>(array: T[]): T[] {
-    return array.sort((a: T, b: T) => !!a === !!b ? 0 : !!a ? 1 : -1);
-}
-
-function sortForceConvertTrueFalse<T>(array: T[]): T[] {
-    return array.sort((a: T, b: T) => !!a === !!b ? 0 : !!a ? -1 : 1);
-}
-
 export default function sortArrayBooleanTruthy<T>(array: T[], order: OrderBoolean) {
     if (!Array.isArray(array)) {
         return [];
@@ -17,11 +9,20 @@ export default function sortArrayBooleanTruthy<T>(array: T[], order: OrderBoolea
         return [];
     }
 
-    const copyArray = array.slice();
+    const truthy: T[] = [];
+    const falsy: T[] = [];
 
-    if (order === 'false-true') {
-        return sortForceConvertFalseTrue(copyArray);
+    for (const value of array) {
+        if (value) {
+            truthy.push(value);
+        } else {
+            falsy.push(value);
+        }
     }
 
-    return sortForceConvertTrueFalse(copyArray);
+    if (order === 'false-true') {
+        return falsy.concat(truthy);
+    }
+
+    return truthy.concat(falsy);
 }

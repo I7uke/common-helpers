@@ -1,1 +1,0 @@
-export type AvailableKeys<TItem, TValue> = ({ [P in keyof TItem]: TItem[P] extends TValue ? P : never })[keyof TItem];

@@ -6,6 +6,7 @@
     "install-package": "yarn install --frozen-lockfile",
     "test": "jest --coverage",
     "test:convert": "jest __tests__/convert --coverage",
+    "test:sort": "jest __tests__/sort --coverage",
     "test-validationString": "jest validationString.test.ts --coverage",
     "test-validationNumber": "jest validationNumber.test.ts --coverage",
     "test-validationDate": "jest validationDate.test.ts --coverage",

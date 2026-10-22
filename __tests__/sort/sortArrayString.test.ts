@@ -1,69 +1,16 @@
-import sortArrayString from "../../src/sort/sortArrayString";
+import { sortArrayString } from "../../src";
 
-interface TestObject {
-    readonly array: any;
-    readonly resultAZInvalidFirst: any;
-    readonly resultAZInvalidLast: any;
-    readonly resultZAInvalidFirst: any;
-    readonly resultZAInvalidLast: any;
+function testGroupIdenticalResult(array: unknown[], result: unknown[]){
+    expect(sortArrayString(array, 'a-z')).toStrictEqual(result);
+    expect(sortArrayString(array, 'a-z', 'first')).toStrictEqual(result);
+    expect(sortArrayString(array, 'a-z', 'last')).toStrictEqual(result);
+
+    expect(sortArrayString(array, 'z-a')).toStrictEqual(result);
+    expect(sortArrayString(array, 'z-a', 'first')).toStrictEqual(result);
+    expect(sortArrayString(array, 'z-a', 'last')).toStrictEqual(result);
 }
 
-function testGroup(testObject: TestObject) {
-    // array 
-    expect(sortArrayString({
-        array: testObject.array
-    })).toStrictEqual(testObject.resultAZInvalidLast);
-
-    // order
-    expect(sortArrayString({
-        array: testObject.array,
-        order: 'a-z',
-    })).toStrictEqual(testObject.resultAZInvalidLast);
-
-    expect(sortArrayString({
-        array: testObject.array,
-        order: 'z-a',
-    })).toStrictEqual(testObject.resultZAInvalidLast);
-
-    // orderOfInvalidValue
-    expect(sortArrayString({
-        array: testObject.array,
-        orderOfInvalidValue: 'first'
-    })).toStrictEqual(testObject.resultAZInvalidFirst);
-
-    expect(sortArrayString({
-        array: testObject.array,
-        orderOfInvalidValue: 'last'
-    })).toStrictEqual(testObject.resultAZInvalidLast);
-
-    // order orderOfInvalidValue
-    expect(sortArrayString({
-        array: testObject.array,
-        order: 'a-z',
-        orderOfInvalidValue: 'first'
-    })).toStrictEqual(testObject.resultAZInvalidFirst);
-
-    expect(sortArrayString({
-        array: testObject.array,
-        order: 'a-z',
-        orderOfInvalidValue: 'last'
-    })).toStrictEqual(testObject.resultAZInvalidLast);
-
-    expect(sortArrayString({
-        array: testObject.array,
-        order: 'z-a',
-        orderOfInvalidValue: 'first'
-    })).toStrictEqual(testObject.resultZAInvalidFirst);
-
-    expect(sortArrayString({
-        array: testObject.array,
-        order: 'z-a',
-        orderOfInvalidValue: 'last'
-    })).toStrictEqual(testObject.resultZAInvalidLast);
-}
-
-//#region Некорректное значение
-test('Некорректные значения', () => {
+test('Некорректный аргумент и массивы с одним элементом', () => {
     const incorrectValues: any[] = [
         true,
         false,
@@ -77,6 +24,7 @@ test('Некорректные значения', () => {
         'string',
         '123',
         NaN,
+        new Date(),
         new Date('InvalidDate'),
         undefined,
         null,
@@ -84,141 +32,104 @@ test('Некорректные значения', () => {
     ];
 
     for (const value of incorrectValues) {
-        testGroup({
-            array: value,
-            resultAZInvalidFirst: [],
-            resultAZInvalidLast: [],
-            resultZAInvalidFirst: [],
-            resultZAInvalidLast: [],
-        });
+        testGroupIdenticalResult(value, []);
+        testGroupIdenticalResult([value], [value]);
     }
 });
-//#endregion
 
-//#region В массиве нет строк
-test('В массиве нет строк', () => {
-    const incorrectValues: any[] = [
-        true,
-        false,
-        () => { },
-        { a: 1, b: 2 },
-        -5,
-        0,
-        10,
-        NaN,
-        new Date('InvalidDate'),
-        undefined,
-        null,
-        [],
-        [1, 2, 3],
-        ['a', 'b', 'c']
-    ];
-
-    testGroup({
-        array: incorrectValues,
-        resultAZInvalidFirst: incorrectValues,
-        resultAZInvalidLast: incorrectValues,
-        resultZAInvalidFirst: incorrectValues,
-        resultZAInvalidLast: incorrectValues,
-    });
+test('В массиве нет string', () => {
+    const getTestArray = () => [null, -1, true, {}, 0, undefined, false, [], 1];
+    testGroupIdenticalResult(getTestArray(), getTestArray());
 });
-//#endregion
 
-//#region В массиве только строки
-test('В массиве только строки', () => {
-    const testArray: TestObject[] = [
-        {
-            array: ['a', 'b', 'c', 'd', 'e'],
-            resultAZInvalidFirst: ['a', 'b', 'c', 'd', 'e'],
-            resultAZInvalidLast: ['a', 'b', 'c', 'd', 'e'],
-            resultZAInvalidFirst: ['e', 'd', 'c', 'b', 'a'],
-            resultZAInvalidLast: ['e', 'd', 'c', 'b', 'a']
-        },
-        {
-            array: ['c', 'a', 'b', 'e', 'd',],
-            resultAZInvalidFirst: ['a', 'b', 'c', 'd', 'e'],
-            resultAZInvalidLast: ['a', 'b', 'c', 'd', 'e'],
-            resultZAInvalidFirst: ['e', 'd', 'c', 'b', 'a'],
-            resultZAInvalidLast: ['e', 'd', 'c', 'b', 'a']
-        },
-        {
-            array: ['d', 'z', 'b', 'г', 'я', 'б'],
-            resultAZInvalidFirst: ['б', 'г', 'я', 'b', 'd', 'z'],
-            resultAZInvalidLast: ['б', 'г', 'я', 'b', 'd', 'z'],
-            resultZAInvalidFirst: ['z', 'd', 'b', 'я', 'г', 'б'],
-            resultZAInvalidLast: ['z', 'd', 'b', 'я', 'г', 'б']
-        },
-        {
-            array: ['c', 'a', '', 'b', 'e', '', 'd',],
-            resultAZInvalidFirst: ['', '', 'a', 'b', 'c', 'd', 'e'],
-            resultAZInvalidLast: ['a', 'b', 'c', 'd', 'e', '', ''],
-            resultZAInvalidFirst: ['', '', 'e', 'd', 'c', 'b', 'a'],
-            resultZAInvalidLast: ['e', 'd', 'c', 'b', 'a', '', '']
-        },
-        {
-            array: ['z', 'b', 'c', 'a', 'e', 'Б', 'Я', 'В', 'А', 'Е', 'Z', 'B', 'C', 'A', 'E', 'я', 'б', 'в', 'а', 'е'],
-            resultAZInvalidFirst: ['А', 'а', 'Б', 'б', 'В', 'в', 'Е', 'е', 'Я', 'я', 'a', 'A', 'b', 'B', 'c', 'C', 'e', 'E', 'z', 'Z'],
-            resultAZInvalidLast: ['А', 'а', 'Б', 'б', 'В', 'в', 'Е', 'е', 'Я', 'я', 'a', 'A', 'b', 'B', 'c', 'C', 'e', 'E', 'z', 'Z'],
-            resultZAInvalidFirst: ['z', 'Z', 'e', 'E', 'c', 'C', 'b', 'B', 'a', 'A', 'Я', 'я', 'Е', 'е', 'В', 'в', 'Б', 'б', 'А', 'а'],
-            resultZAInvalidLast: ['z', 'Z', 'e', 'E', 'c', 'C', 'b', 'B', 'a', 'A', 'Я', 'я', 'Е', 'е', 'В', 'в', 'Б', 'б', 'А', 'а']
-        }
-    ];
+test('Массив уже отсортирован', () => {
+    const testData: Record<string, () => string[]> = {
+        'ru':()=> ['апельсин', 'арбуз', 'яблоко', 'apple', 'banana', 'cherry', '苹果', '西瓜', '香蕉'],
+        'en': ()=> ['apple', 'banana', 'cherry', 'апельсин', 'арбуз', 'яблоко', '苹果', '西瓜', '香蕉'],
+        'zh':()=> ['苹果', '西瓜', '香蕉', 'apple', 'banana', 'cherry', 'апельсин', 'арбуз', 'яблоко']
+    }
 
-    for (const value of testArray) {
-        testGroup(value);
+    for (const locale in testData) {
+        const getTestArrayAZ = testData[locale]!;
+
+        expect(sortArrayString(getTestArrayAZ(), 'a-z', 'first', locale)).toStrictEqual(getTestArrayAZ());
+        expect(sortArrayString(getTestArrayAZ(), 'a-z', 'last', locale)).toStrictEqual(getTestArrayAZ());
+
+        expect(sortArrayString(getTestArrayAZ().reverse(), 'z-a', 'first', locale)).toStrictEqual(getTestArrayAZ().reverse());
+        expect(sortArrayString(getTestArrayAZ().reverse(), 'z-a', 'last', locale)).toStrictEqual(getTestArrayAZ().reverse());
     }
 });
-//#endregion
 
-//#region В массиве есть строки и не строки
-test('В массиве есть строки и не строки', () => {
-    const testArray: TestObject[] = [
-        {
-            array: ['c', 'a', undefined, '', 'b', null, 'e', '', 'd',],
-            resultAZInvalidFirst: [undefined, '', null, '', 'a', 'b', 'c', 'd', 'e'],
-            resultAZInvalidLast: ['a', 'b', 'c', 'd', 'e', undefined, '', null, '',],
-            resultZAInvalidFirst: [undefined, '', null, '', 'e', 'd', 'c', 'b', 'a'],
-            resultZAInvalidLast: ['e', 'd', 'c', 'b', 'a', undefined, '', null, '',]
-        },
-        {
-            array: [undefined, '', null, ''],
-            resultAZInvalidFirst: [undefined, '', null, ''],
-            resultAZInvalidLast: [undefined, '', null, ''],
-            resultZAInvalidFirst: [undefined, '', null, ''],
-            resultZAInvalidLast: [undefined, '', null, '']
-        },
-        {
-            array: ['a', undefined, 'b', { a: 1, b: 2 }, 'c', null, 100, NaN, 'd', 5, 'e'],
-            resultAZInvalidFirst: [undefined, { a: 1, b: 2 }, null, 100, NaN, 5, 'a', 'b', 'c', 'd', 'e'],
-            resultAZInvalidLast: ['a', 'b', 'c', 'd', 'e', undefined, { a: 1, b: 2 }, null, 100, NaN, 5],
-            resultZAInvalidFirst: [undefined, { a: 1, b: 2 }, null, 100, NaN, 5, 'e', 'd', 'c', 'b', 'a'],
-            resultZAInvalidLast: ['e', 'd', 'c', 'b', 'a', undefined, { a: 1, b: 2 }, null, 100, NaN, 5]
-        },
-        {
-            array: ['d', 1, 2, 3, 'z', 'b', 'г', 4, 5, 6, 'я', 7, 'б', 8, 9],
-            resultAZInvalidFirst: [1, 2, 3, 4, 5, 6, 7, 8, 9, 'б', 'г', 'я', 'b', 'd', 'z'],
-            resultAZInvalidLast: ['б', 'г', 'я', 'b', 'd', 'z', 1, 2, 3, 4, 5, 6, 7, 8, 9],
-            resultZAInvalidFirst: [1, 2, 3, 4, 5, 6, 7, 8, 9, 'z', 'd', 'b', 'я', 'г', 'б'],
-            resultZAInvalidLast: ['z', 'd', 'b', 'я', 'г', 'б', 1, 2, 3, 4, 5, 6, 7, 8, 9]
-        },
-        {
-            array: ['c', 'a', 1, 'b', 'e', 2, 'd',],
-            resultAZInvalidFirst: [1, 2, 'a', 'b', 'c', 'd', 'e'],
-            resultAZInvalidLast: ['a', 'b', 'c', 'd', 'e', 1, 2],
-            resultZAInvalidFirst: [1, 2, 'e', 'd', 'c', 'b', 'a'],
-            resultZAInvalidLast: ['e', 'd', 'c', 'b', 'a', 1, 2]
-        },
-        {
-            array: ['z', 'b', undefined, 'c', 'a', null, 'e', 'Б', 'Я', NaN, 'В', [], 'А', 'Е', 'Z', ['test'], 'B', 'C', { a: 100 }, 'A', 'E', 5, 'я', 'б', 'в', 'а', 'е', 10],
-            resultAZInvalidFirst: [undefined, null, NaN, [], ['test'], { a: 100 }, 5, 10, 'А', 'а', 'Б', 'б', 'В', 'в', 'Е', 'е', 'Я', 'я', 'a', 'A', 'b', 'B', 'c', 'C', 'e', 'E', 'z', 'Z'],
-            resultAZInvalidLast: ['А', 'а', 'Б', 'б', 'В', 'в', 'Е', 'е', 'Я', 'я', 'a', 'A', 'b', 'B', 'c', 'C', 'e', 'E', 'z', 'Z', undefined, null, NaN, [], ['test'], { a: 100 }, 5, 10],
-            resultZAInvalidFirst: [undefined, null, NaN, [], ['test'], { a: 100 }, 5, 10, 'z', 'Z', 'e', 'E', 'c', 'C', 'b', 'B', 'a', 'A', 'Я', 'я', 'Е', 'е', 'В', 'в', 'Б', 'б', 'А', 'а'],
-            resultZAInvalidLast: ['z', 'Z', 'e', 'E', 'c', 'C', 'b', 'B', 'a', 'A', 'Я', 'я', 'Е', 'е', 'В', 'в', 'Б', 'б', 'А', 'а', undefined, null, NaN, [], ['test'], { a: 100 }, 5, 10]
-        }
-    ];
+test('Массив только string', () => {
+    const getTestArray = () => ['яблоко', 'banana', '苹果', 'арбуз', 'apple', '香蕉', 'апельсин', 'cherry', '西瓜', 'orange', '樱桃', 'киви'];
 
-    for (const value of testArray) {
-        testGroup(value);
+    const testData: Record<string, () => string[]> = {
+        'ru': () => ['апельсин', 'арбуз', 'киви', 'яблоко', 'apple', 'banana', 'cherry', 'orange', '樱桃', '苹果', '西瓜', '香蕉'],
+        'en': () =>  ['apple', 'banana', 'cherry', 'orange', 'апельсин', 'арбуз', 'киви', 'яблоко', '樱桃', '苹果', '西瓜', '香蕉'],
+        'zh': () => ['苹果', '西瓜', '香蕉', '樱桃', 'apple', 'banana', 'cherry', 'orange', 'апельсин', 'арбуз', 'киви', 'яблоко']
+    };
+
+    for (const locale in testData) {
+        const getResultAZ = testData[locale]!;
+
+        expect(sortArrayString(getTestArray(), 'a-z', 'first', locale)).toStrictEqual(getResultAZ());
+        expect(sortArrayString(getTestArray(), 'a-z', 'last', locale)).toStrictEqual(getResultAZ());
+
+        expect(sortArrayString(getTestArray(), 'z-a', 'first', locale)).toStrictEqual(getResultAZ().reverse());
+        expect(sortArrayString(getTestArray(), 'z-a', 'last', locale)).toStrictEqual(getResultAZ().reverse());
     }
 });
-//#endregion
+
+test('В массиве присутствуют другие значения помимо string', () => {
+    const getTestArray = () => [false, 'яблоко', null, 'banana', true, '苹果', undefined, 'арбуз', '', -1, 'apple', [], '香蕉', {}, 'апельсин', 1, 'cherry', NaN, '西瓜', '', 'orange', '樱桃', 0, 'киви'];
+    const getResultInvalidItems = () =>  [false, null, true, undefined, '',  -1, [], {}, 1, NaN, '', 0];
+    
+    const testData: Record<string, () => string[]> = {
+        'ru': () => ['апельсин', 'арбуз', 'киви', 'яблоко', 'apple', 'banana', 'cherry', 'orange', '樱桃', '苹果', '西瓜', '香蕉'],
+        'en': () =>  ['apple', 'banana', 'cherry', 'orange', 'апельсин', 'арбуз', 'киви', 'яблоко', '樱桃', '苹果', '西瓜', '香蕉'],
+        'zh': () => ['苹果', '西瓜', '香蕉', '樱桃', 'apple', 'banana', 'cherry', 'orange', 'апельсин', 'арбуз', 'киви', 'яблоко']
+    };
+
+    for (const locale in testData) {
+        const getResultAZ = testData[locale]!;
+
+        expect(sortArrayString(getTestArray(), 'a-z', 'first', locale)).toStrictEqual([...getResultInvalidItems(),...getResultAZ()]);
+        expect(sortArrayString(getTestArray(), 'a-z', 'last', locale)).toStrictEqual([...getResultAZ(), ...getResultInvalidItems()]);
+
+        expect(sortArrayString(getTestArray(), 'z-a', 'first', locale)).toStrictEqual([...getResultInvalidItems(), ...getResultAZ().reverse()]);
+        expect(sortArrayString(getTestArray(), 'z-a', 'last', locale)).toStrictEqual([...getResultAZ().reverse(), ...getResultInvalidItems()]);
+    }
+});
+
+test('Повторяющиеся string', () => {
+    const getTestArray = () => ['string', 'string', 'string'];
+
+    expect(sortArrayString(getTestArray(), 'a-z')).toStrictEqual(getTestArray());
+    expect(sortArrayString(getTestArray(), 'a-z', 'first')).toStrictEqual(getTestArray());
+    expect(sortArrayString(getTestArray(), 'a-z', 'last')).toStrictEqual(getTestArray());
+
+    expect(sortArrayString(getTestArray(), 'z-a')).toStrictEqual(getTestArray());
+    expect(sortArrayString(getTestArray(), 'z-a', 'first')).toStrictEqual(getTestArray());
+    expect(sortArrayString(getTestArray(), 'z-a', 'last')).toStrictEqual(getTestArray());
+});
+
+
+test('Исходный массив не мутирует', () => {
+    const getTestArray = () => [false, '3', null, '1', true, '2', undefined, '', -1, '5', [], '4'];
+
+    const getResultAZ = () => ['1', '2', '3', '4', '5'];
+    const getResultZA = () => ['5', '4', '3', '2', '1'];
+    const getResultInvalidItems = () => [false, null, true, undefined, '', -1, []];
+
+    const testArray = getTestArray();
+
+    expect(sortArrayString(testArray, 'a-z')).toStrictEqual([...getResultAZ(), ...getResultInvalidItems()]);
+    expect(sortArrayString(testArray, 'a-z', 'first')).toStrictEqual([...getResultInvalidItems(), ...getResultAZ()]);
+    expect(sortArrayString(testArray, 'a-z', 'last')).toStrictEqual([...getResultAZ(), ...getResultInvalidItems()]);
+
+    expect(sortArrayString(testArray, 'z-a')).toStrictEqual([...getResultZA(), ...getResultInvalidItems()]);
+    expect(sortArrayString(testArray, 'z-a', 'first')).toStrictEqual([...getResultInvalidItems(), ...getResultZA()]);
+    expect(sortArrayString(testArray, 'z-a', 'last')).toStrictEqual([...getResultZA(), ...getResultInvalidItems()]);
+
+    expect(testArray).toStrictEqual(getTestArray());
+});

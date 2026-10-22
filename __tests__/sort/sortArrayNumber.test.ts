@@ -1,309 +1,109 @@
-import sortArrayNumber from "../../src/sort/sortArrayNumber";
+import { sortArrayNumber } from "../../src";
 
-type TestArray = (number | undefined | null)[];
+function testGroupIdenticalResult(array: unknown[], result: unknown[]){
+    expect(sortArrayNumber(array, '0-9')).toStrictEqual(result);
+    expect(sortArrayNumber(array, '0-9', 'first')).toStrictEqual(result);
+    expect(sortArrayNumber(array, '0-9', 'last')).toStrictEqual(result);
 
-interface TestData {
-    readonly array: TestArray;
-    readonly resultAZInvalidFirst: TestArray;
-    readonly resultAZInvalidLast: TestArray;
-    readonly resultZAInvalidFirst: TestArray;
-    readonly resultZAInvalidLast: TestArray;
+    expect(sortArrayNumber(array, '9-0')).toStrictEqual(result);
+    expect(sortArrayNumber(array, '9-0', 'first')).toStrictEqual(result);
+    expect(sortArrayNumber(array, '9-0', 'last')).toStrictEqual(result);
 }
 
-function getTestData1(): TestData {
-    return {
-        array: [1, 2, 3, 4, 5],
-        resultAZInvalidFirst: [1, 2, 3, 4, 5],
-        resultAZInvalidLast: [1, 2, 3, 4, 5],
-        resultZAInvalidFirst: [5, 4, 3, 2, 1],
-        resultZAInvalidLast: [5, 4, 3, 2, 1]
+test('Некорректный аргумент и массивы с одним элементом', () => {
+    const incorrectValues: any[] = [
+        true,
+        false,
+        () => { },
+        { a: 1, b: 2 },
+        -5,
+        0,
+        10,
+        '',
+        ' ',
+        'string',
+        '123',
+        NaN,
+        new Date(),
+        new Date('InvalidDate'),
+        undefined,
+        null,
+        []
+    ];
+
+    for (const value of incorrectValues) {
+        testGroupIdenticalResult(value, []);
+        testGroupIdenticalResult([value], [value]);
     }
-};
-
-function getTestData2(): TestData {
-    return {
-        array: [3, 1, 2, 5, 4,],
-        resultAZInvalidFirst: [1, 2, 3, 4, 5],
-        resultAZInvalidLast: [1, 2, 3, 4, 5],
-        resultZAInvalidFirst: [5, 4, 3, 2, 1],
-        resultZAInvalidLast: [5, 4, 3, 2, 1]
-    }
-};
-
-function getTestData3(): TestData {
-    return {
-        array: [3, 1, NaN, 2, 5, NaN, 4,],
-        resultAZInvalidFirst: [NaN, NaN, 1, 2, 3, 4, 5],
-        resultAZInvalidLast: [1, 2, 3, 4, 5, NaN, NaN],
-        resultZAInvalidFirst: [NaN, NaN, 5, 4, 3, 2, 1],
-        resultZAInvalidLast: [5, 4, 3, 2, 1, NaN, NaN]
-    }
-};
-
-function getTestData4(): TestData {
-    return {
-        array: [3, 1, undefined, NaN, 2, null, 5, NaN, 4,],
-        resultAZInvalidFirst: [undefined, NaN, null, NaN, 1, 2, 3, 4, 5],
-        resultAZInvalidLast: [1, 2, 3, 4, 5, undefined, NaN, null, NaN,],
-        resultZAInvalidFirst: [undefined, NaN, null, NaN, 5, 4, 3, 2, 1],
-        resultZAInvalidLast: [5, 4, 3, 2, 1, undefined, NaN, null, NaN,]
-    }
-};
-
-function getTestData5(): TestData {
-    return {
-        array: [ undefined, NaN, null, NaN],
-        resultAZInvalidFirst: [undefined, NaN, null, NaN],
-        resultAZInvalidLast: [undefined, NaN, null, NaN ],
-        resultZAInvalidFirst: [undefined, NaN, null, NaN],
-        resultZAInvalidLast: [undefined, NaN, null, NaN]
-    }
-};
-
-//#region Некорректное значение
-test('Некорректное значение Date', () => {
-    expect(sortArrayNumber({
-        array: new Date() as any,
-        order: '0-9',
-    })).toStrictEqual([]);
 });
 
-test('Некорректное значение string', () => {
-    expect(sortArrayNumber({
-        array: 'string' as any,
-        order: '0-9',
-    })).toStrictEqual([]);
+test('В массиве нет number', () => {
+    const getTestArray = () => [null, true, {}, '', undefined, false, [], 'string'];
+    testGroupIdenticalResult(getTestArray(), getTestArray());
 });
 
-test('Некорректное значение string', () => {
-    expect(sortArrayNumber({
-        array: 5 as any,
-        order: '0-9',
-    })).toStrictEqual([]);
+test('Массив уже отсортирован', () => {
+    const getTestArray09 = () => [-2, -1, 0, 1, 2];
+    const getTestArray90 = () => [2, 1, 0, -1, -2];
+
+    expect(sortArrayNumber(getTestArray09(), '0-9')).toStrictEqual(getTestArray09());
+    expect(sortArrayNumber(getTestArray09(), '0-9', 'first')).toStrictEqual(getTestArray09());
+    expect(sortArrayNumber(getTestArray09(), '0-9', 'last')).toStrictEqual(getTestArray09());
+
+    expect(sortArrayNumber(getTestArray90(), '9-0')).toStrictEqual(getTestArray90());
+    expect(sortArrayNumber(getTestArray90(), '9-0', 'first')).toStrictEqual(getTestArray90());
+    expect(sortArrayNumber(getTestArray90(), '9-0', 'last')).toStrictEqual(getTestArray90());
 });
 
-test('Некорректное значение object', () => {
-    expect(sortArrayNumber({
-        array: { a: 1, b: 2 } as any,
-        order: '0-9',
-    })).toStrictEqual([]);
+test('Массив только number', () => {
+    const getTestArray = () => [1, -2, 2, -1, 0];
+    const getResult09 = () => [-2, -1, 0, 1, 2];
+    const getResult90 = () => [2, 1, 0, -1, -2];
+
+    expect(sortArrayNumber(getTestArray(), '0-9')).toStrictEqual(getResult09());
+    expect(sortArrayNumber(getTestArray(), '0-9', 'first')).toStrictEqual(getResult09());
+    expect(sortArrayNumber(getTestArray(), '0-9', 'last')).toStrictEqual(getResult09());
+
+    expect(sortArrayNumber(getTestArray(), '9-0')).toStrictEqual(getResult90());
+    expect(sortArrayNumber(getTestArray(), '9-0', 'first')).toStrictEqual(getResult90());
+    expect(sortArrayNumber(getTestArray(), '9-0', 'last')).toStrictEqual(getResult90());
 });
 
-test('Некорректное значение function', () => {
-    expect(sortArrayNumber({
-        array: (() => { }) as any,
-        order: '0-9',
-    })).toStrictEqual([]);
+test('В массиве присутствуют другие значения помимо number', () => {
+    const getTestArray = () => [0, undefined, false, -1, null, 'string', true, '', 2,  NaN, 1, {}, -2, [], false];
+    const getResult09 = () => [-2, -1, 0, 1, 2];
+    const getResult90 = () => [2, 1, 0, -1, -2];
+    const getResultInvalidItems = () =>  [undefined, false, null, 'string', true, '', NaN, {}, [], false];
+
+    expect(sortArrayNumber(getTestArray(), '0-9')).toStrictEqual([...getResult09(), ...getResultInvalidItems()]);
+    expect(sortArrayNumber(getTestArray(), '0-9', 'first')).toStrictEqual([...getResultInvalidItems(), ...getResult09()]);
+    expect(sortArrayNumber(getTestArray(), '0-9', 'last')).toStrictEqual([...getResult09(), ...getResultInvalidItems()]);
+
+    expect(sortArrayNumber(getTestArray(), '9-0')).toStrictEqual([...getResult90(), ...getResultInvalidItems()]);
+    expect(sortArrayNumber(getTestArray(), '9-0', 'first')).toStrictEqual([...getResultInvalidItems(), ...getResult90()]);
+    expect(sortArrayNumber(getTestArray(), '9-0', 'last')).toStrictEqual([...getResult90(), ...getResultInvalidItems()]);
 });
 
-test('Некорректное значение undefined', () => {
-    expect(sortArrayNumber({
-        array: undefined as any,
-        order: '0-9',
-    })).toStrictEqual([]);
+test('Повторяющиеся number', () => {
+    const getTestArray = () => [5, 5, 5];
+
+    expect(sortArrayNumber(getTestArray(), '0-9')).toStrictEqual(getTestArray());
+    expect(sortArrayNumber(getTestArray(), '0-9', 'first')).toStrictEqual(getTestArray());
+    expect(sortArrayNumber(getTestArray(), '0-9', 'last')).toStrictEqual(getTestArray());
+
+    expect(sortArrayNumber(getTestArray(), '9-0')).toStrictEqual(getTestArray());
+    expect(sortArrayNumber(getTestArray(), '9-0', 'first')).toStrictEqual(getTestArray());
+    expect(sortArrayNumber(getTestArray(), '9-0', 'last')).toStrictEqual(getTestArray());
 });
 
-test('Некорректное значение null', () => {
-    expect(sortArrayNumber({
-        array: undefined as any,
-        order: '0-9',
-    })).toStrictEqual([]);
-});
+test('Массив содержит только NaN', () => {
+    const getTestArray = () => [NaN, NaN, NaN];
 
-test('Пустой массив', () => {
-    expect(sortArrayNumber({
-        array: [],
-        order: '0-9',
-    })).toStrictEqual([]);
-});
-//#endregion
+    expect(sortArrayNumber(getTestArray(), '0-9')).toStrictEqual(getTestArray());
+    expect(sortArrayNumber(getTestArray(), '0-9', 'first')).toStrictEqual(getTestArray());
+    expect(sortArrayNumber(getTestArray(), '0-9', 'last')).toStrictEqual(getTestArray());
 
-//#region Массив уже отсортирован
-test('Массив уже отсортирован 0-9', () => {
-    const testData = getTestData1();
-    expect(sortArrayNumber({
-        array:testData.array,
-        order: '0-9',
-        orderOfInvalidValue: 'first'
-    })).toStrictEqual(testData.resultAZInvalidFirst);
+    expect(sortArrayNumber(getTestArray(), '9-0')).toStrictEqual(getTestArray());
+    expect(sortArrayNumber(getTestArray(), '9-0', 'first')).toStrictEqual(getTestArray());
+    expect(sortArrayNumber(getTestArray(), '9-0', 'last')).toStrictEqual(getTestArray());
 });
-
-test('Массив уже отсортирован 0-9', () => {
-    const testData = getTestData1();
-    expect(sortArrayNumber({
-        array:testData.array,
-        order: '0-9',
-        orderOfInvalidValue: 'last'
-    })).toStrictEqual(testData.resultAZInvalidLast);
-});
-
-test('Массив уже отсортирован 9-0', () => {
-    const testData = getTestData1();
-    expect(sortArrayNumber({
-        array:testData.array,
-        order: '9-0',
-        orderOfInvalidValue: 'first'
-    })).toStrictEqual(testData.resultZAInvalidFirst);
-});
-
-test('Массив уже отсортирован 9-0', () => {
-    const testData = getTestData1();
-    expect(sortArrayNumber({
-        array:testData.array,
-        order: '9-0',
-        orderOfInvalidValue: 'last'
-    })).toStrictEqual(testData.resultZAInvalidLast);
-});
-//#endregion
-
-//#region Массив корректных значений
-test('Массив корректных значений 0-9', () => {
-    const testData = getTestData2();
-    expect(sortArrayNumber({
-        array:testData.array,
-        order: '0-9',
-        orderOfInvalidValue: 'first'
-    })).toStrictEqual(testData.resultAZInvalidFirst);
-});
-
-test('Массив корректных значений 0-9', () => {
-    const testData = getTestData2();
-    expect(sortArrayNumber({
-        array:testData.array,
-        order: '0-9',
-        orderOfInvalidValue: 'last'
-    })).toStrictEqual(testData.resultAZInvalidLast);
-});
-
-test('Массив корректных значений 9-0', () => {
-    const testData = getTestData2();
-    expect(sortArrayNumber({
-        array:testData.array,
-        order: '9-0',
-        orderOfInvalidValue: 'first'
-    })).toStrictEqual(testData.resultZAInvalidFirst);
-});
-
-test('Массив корректных значений 9-0', () => {
-    const testData = getTestData2();
-    expect(sortArrayNumber({
-        array:testData.array,
-        order: '9-0',
-        orderOfInvalidValue: 'last'
-    })).toStrictEqual(testData.resultZAInvalidLast);
-});
-//#endregion
-
-//#region Присутствуют NaN
-test('Присутствуют NaN 0-9', () => {
-    const testData = getTestData3();
-    expect(sortArrayNumber({
-        array:testData.array,
-        order: '0-9',
-        orderOfInvalidValue: 'first'
-    })).toStrictEqual(testData.resultAZInvalidFirst);
-});
-
-test('Присутствуют NaN 0-9', () => {
-    const testData = getTestData3();
-    expect(sortArrayNumber({
-        array:testData.array,
-        order: '0-9',
-        orderOfInvalidValue: 'last'
-    })).toStrictEqual(testData.resultAZInvalidLast);
-});
-
-test('Присутствуют NaN 9-0', () => {
-    const testData = getTestData3();
-    expect(sortArrayNumber({
-        array:testData.array,
-        order: '9-0',
-        orderOfInvalidValue: 'first'
-    })).toStrictEqual(testData.resultZAInvalidFirst);
-});
-
-test('Присутствуют NaN 9-0', () => {
-    const testData = getTestData3();
-    expect(sortArrayNumber({
-        array:testData.array,
-        order: '9-0',
-        orderOfInvalidValue: 'last'
-    })).toStrictEqual(testData.resultZAInvalidLast);
-});
-//#endregion
-
-//#region Присутствуют некорректные значения
-test('Присутствуют некорректные значения 0-9', () => {
-    const testData = getTestData4();
-    expect(sortArrayNumber({
-        array:testData.array,
-        order: '0-9',
-        orderOfInvalidValue: 'first'
-    })).toStrictEqual(testData.resultAZInvalidFirst);
-});
-
-test('Присутствуют некорректные значения 0-9', () => {
-    const testData = getTestData4();
-    expect(sortArrayNumber({
-        array:testData.array,
-        order: '0-9',
-        orderOfInvalidValue: 'last'
-    })).toStrictEqual(testData.resultAZInvalidLast);
-});
-
-test('Присутствуют некорректные значения 9-0', () => {
-    const testData = getTestData4();
-    expect(sortArrayNumber({
-        array:testData.array,
-        order: '9-0',
-        orderOfInvalidValue: 'first'
-    })).toStrictEqual(testData.resultZAInvalidFirst);
-});
-
-test('Присутствуют некорректные значения 9-0', () => {
-    const testData = getTestData4();
-    expect(sortArrayNumber({
-        array:testData.array,
-        order: '9-0',
-        orderOfInvalidValue: 'last'
-    })).toStrictEqual(testData.resultZAInvalidLast);
-});
-//#endregion
-
-//#region Все значения некорректные
-test('Все значения некорректные 0-9', () => {
-    const testData = getTestData5();
-    expect(sortArrayNumber({
-        array:testData.array,
-        order: '0-9',
-        orderOfInvalidValue: 'first'
-    })).toStrictEqual(testData.resultAZInvalidFirst);
-});
-
-test('Все значения некорректные 0-9', () => {
-    const testData = getTestData5();
-    expect(sortArrayNumber({
-        array:testData.array,
-        order: '0-9',
-        orderOfInvalidValue: 'last'
-    })).toStrictEqual(testData.resultAZInvalidLast);
-});
-
-test('Все значения некорректные 9-0', () => {
-    const testData = getTestData5();
-    expect(sortArrayNumber({
-        array:testData.array,
-        order: '9-0',
-        orderOfInvalidValue: 'first'
-    })).toStrictEqual(testData.resultZAInvalidFirst);
-});
-
-test('Все значения некорректные 9-0', () => {
-    const testData = getTestData5();
-    expect(sortArrayNumber({
-        array:testData.array,
-        order: '9-0',
-        orderOfInvalidValue: 'last'
-    })).toStrictEqual(testData.resultZAInvalidLast);
-});
-//#endregion

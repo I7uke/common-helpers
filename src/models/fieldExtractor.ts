@@ -1,1 +1,0 @@
-export type FieldExtractor<TItem, TValue> = (item: TItem) => TValue;
