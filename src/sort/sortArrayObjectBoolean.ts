@@ -1,15 +1,8 @@
-import type { OrderBoolean, OrderOfInvalidValue } from "../models/sorting";
+import type { OrderBoolean, SortParams } from "../models/sorting";
 
-type FieldExtractor<T> = (item: T)=> boolean | null | undefined;
+type Params<T> = SortParams<T, boolean, OrderBoolean>;
 
-interface Params<T> {
-    readonly array: T[] | undefined | null;
-    readonly order: OrderBoolean;
-    readonly orderOfInvalidValue?: OrderOfInvalidValue;
-    readonly field: FieldExtractor<T>;
-}
-
-function sortFalseTrue<T>(array: T[], field: FieldExtractor<T>): T[] {
+function sortFalseTrue<T>(array: T[], field: Params<T>['field']): T[] {
     return array.sort((a: T, b: T) => {
         const valueA = field(a);
         const valueB = field(b);
@@ -17,7 +10,7 @@ function sortFalseTrue<T>(array: T[], field: FieldExtractor<T>): T[] {
     });
 }
 
-function sortTrueFalse<T>(array: T[], field: FieldExtractor<T>): T[] {
+function sortTrueFalse<T>(array: T[], field: Params<T>['field']): T[] {
     return array.sort((a: T, b: T) => {
         const valueA = field(a);
         const valueB = field(b);

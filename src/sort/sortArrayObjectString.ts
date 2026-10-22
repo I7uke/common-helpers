@@ -1,19 +1,27 @@
-import { type FieldExtractor } from "../models/fieldExtractor";
-type Order = 'az' | 'za';
-type OrderOfInvalidValue = 'last' | 'first';
-type Item = object;
-type Field<T extends Item> = keyof T | FieldExtractor<T, string | undefined | null>
+import type { OrderString, SortParams } from "../models/sorting";
 
-interface Params<T extends Item> {
-    readonly order: Order;
-    readonly array: T[] | undefined | null;
-    readonly orderOfInvalidValue?: OrderOfInvalidValue;
-    readonly field: Field<T>;
+interface Params<T> extends SortParams<T, string, OrderString> {
     readonly locales?: Intl.LocalesArgument;
     readonly options?: Intl.CollatorOptions
 }
 
-export default function sortArrayObjectString<T extends Item>(params: Params<T>): T[] {
+function sortAZ<T>(array: T[], field: Params<T>['field'], collator: Intl.Collator): T[] {
+    return array.sort((a: T, b: T) => {
+        const valueA = field(a)!;
+        const valueB = field(b)!;
+        return collator.compare(valueA, valueB);
+    });
+}
+
+function sortZA<T>(array: T[], field: Params<T>['field'], collator: Intl.Collator): T[] {
+    return array.sort((a: T, b: T) => {
+        const valueA = field(a)!;
+        const valueB = field(b)!;
+        return collator.compare(valueB, valueA);
+    });
+}
+
+export default function sortArrayObjectString<T>(params: Params<T>): T[] {
     if (!Array.isArray(params.array)) {
         return [];
     }
@@ -22,47 +30,29 @@ export default function sortArrayObjectString<T extends Item>(params: Params<T>)
         return [];
     }
 
-    const invalidArray: T[] = [];
-    const array: T[] = [];
+    const nonStringArray: T[] = [];
+    const stringArray: T[] = [];
 
     for (const item of params.array) {
-        const value = typeof params.field === 'function' ? params.field(item) : item[params.field];
+        const value = params.field(item);
         if (typeof value === 'string' && value) {
-            array.push(item);
+            stringArray.push(item);
         } else {
-            invalidArray.push(item);
+            nonStringArray.push(item);
         }
     }
 
-    if (!array.length) {
-        return invalidArray as T[];
+    if (!stringArray.length) {
+        return nonStringArray;
     }
 
-    const collatorLocales = params?.locales;
     const collatorOptions: Intl.CollatorOptions = params.options ?? { sensitivity: 'base' };
-    const sortArray = params.order === 'za' ? sortZA(array, params.field, collatorLocales, collatorOptions) : sortAZ(array, params.field, collatorLocales, collatorOptions);
+    const collator = new Intl.Collator(params.locales, collatorOptions);
+    const sortArray = params.order === 'z-a' ? sortZA(stringArray, params.field, collator) : sortAZ(stringArray, params.field, collator);
 
     if (params.orderOfInvalidValue === 'first') {
-        return [...invalidArray, ...sortArray] as T[];
+        return [...nonStringArray, ...sortArray];
     }
 
-    return [...sortArray, ...invalidArray] as T[];
-}
-
-function sortAZ<T extends Item>(array: T[], field: Field<T>, locales?: Intl.LocalesArgument, options?: Intl.CollatorOptions): T[] {
-    const collator = new Intl.Collator(locales, options);
-    return array.sort((itemA: T, itemB: T) => {
-        const valueA = typeof field === 'function' ? field(itemA) : itemA[field];
-        const valueB = typeof field === 'function' ? field(itemB) : itemB[field];
-        return collator.compare(valueA as string, valueB as string)
-    });
-}
-
-function sortZA<T extends Item>(array: T[], field: Field<T>, locales?: Intl.LocalesArgument, options?: Intl.CollatorOptions): T[] {
-    const collator = new Intl.Collator(locales, options);
-    return array.sort((itemA: T, itemB: T) => {
-        const valueA = typeof field === 'function' ? field(itemA) : itemA[field];
-        const valueB = typeof field === 'function' ? field(itemB) : itemB[field];
-        return collator.compare(valueB as string, valueA as string)
-    });
+    return [...sortArray, ...nonStringArray];
 }
