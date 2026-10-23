@@ -7,6 +7,7 @@ export { default as sortArrayBooleanTruthy } from './sort/sortArrayBooleanTruthy
 export { default as sortArrayDate } from './sort/sortArrayDate';
 export { default as sortArrayNumber } from './sort/sortArrayNumber';
 export { default as sortArrayString } from './sort/sortArrayString';
+export { default as sortArrayObjectBoolean } from './sort/sortArrayObjectBoolean';
 
 export { default as validationStringArray } from './validators/validationStringArray';
 export { default as validationString } from './validators/validationString';
