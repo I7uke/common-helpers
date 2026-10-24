@@ -37,73 +37,67 @@ test('Некорректный аргумент и массивы с одним 
     }
 });
 
+test('Исходный массив не изменяется', () => {
+    const testArray = [0, 1, 2];
+    const originalArray = testArray.slice();
+    const result = sortArrayNumber(testArray, '0-9')
+    expect(testArray).toStrictEqual(originalArray);
+    expect(result === testArray).toStrictEqual(false);
+});
+
 test('В массиве нет number', () => {
-    const getTestArray = () => [null, true, {}, '', undefined, false, [], 'string'];
-    testGroupIdenticalResult(getTestArray(), getTestArray());
+    const testArray = [null, true, {}, '', undefined, false, [], 'string'];
+    testGroupIdenticalResult(testArray, testArray);
 });
 
 test('Массив уже отсортирован', () => {
-    const getTestArray09 = () => [-2, -1, 0, 1, 2];
-    const getTestArray90 = () => [2, 1, 0, -1, -2];
+    const testArray09 = [-2, -1, 0, 1, 2];
+    const testArray90 = [2, 1, 0, -1, -2];
 
-    expect(sortArrayNumber(getTestArray09(), '0-9')).toStrictEqual(getTestArray09());
-    expect(sortArrayNumber(getTestArray09(), '0-9', 'first')).toStrictEqual(getTestArray09());
-    expect(sortArrayNumber(getTestArray09(), '0-9', 'last')).toStrictEqual(getTestArray09());
+    expect(sortArrayNumber(testArray09, '0-9')).toStrictEqual(testArray09);
+    expect(sortArrayNumber(testArray09, '0-9', 'first')).toStrictEqual(testArray09);
+    expect(sortArrayNumber(testArray09, '0-9', 'last')).toStrictEqual(testArray09);
 
-    expect(sortArrayNumber(getTestArray90(), '9-0')).toStrictEqual(getTestArray90());
-    expect(sortArrayNumber(getTestArray90(), '9-0', 'first')).toStrictEqual(getTestArray90());
-    expect(sortArrayNumber(getTestArray90(), '9-0', 'last')).toStrictEqual(getTestArray90());
+    expect(sortArrayNumber(testArray90, '9-0')).toStrictEqual(testArray90);
+    expect(sortArrayNumber(testArray90, '9-0', 'first')).toStrictEqual(testArray90);
+    expect(sortArrayNumber(testArray90, '9-0', 'last')).toStrictEqual(testArray90);
 });
 
 test('Массив только number', () => {
-    const getTestArray = () => [1, -2, 2, -1, 0];
-    const getResult09 = () => [-2, -1, 0, 1, 2];
-    const getResult90 = () => [2, 1, 0, -1, -2];
+    const testArray = [1, -2, 2, -1, 0];
+    const result09 = [-2, -1, 0, 1, 2];
+    const result90 = result09.slice().reverse();
 
-    expect(sortArrayNumber(getTestArray(), '0-9')).toStrictEqual(getResult09());
-    expect(sortArrayNumber(getTestArray(), '0-9', 'first')).toStrictEqual(getResult09());
-    expect(sortArrayNumber(getTestArray(), '0-9', 'last')).toStrictEqual(getResult09());
+    expect(sortArrayNumber(testArray, '0-9')).toStrictEqual(result09);
+    expect(sortArrayNumber(testArray, '0-9', 'first')).toStrictEqual(result09);
+    expect(sortArrayNumber(testArray, '0-9', 'last')).toStrictEqual(result09);
 
-    expect(sortArrayNumber(getTestArray(), '9-0')).toStrictEqual(getResult90());
-    expect(sortArrayNumber(getTestArray(), '9-0', 'first')).toStrictEqual(getResult90());
-    expect(sortArrayNumber(getTestArray(), '9-0', 'last')).toStrictEqual(getResult90());
+    expect(sortArrayNumber(testArray, '9-0')).toStrictEqual(result90);
+    expect(sortArrayNumber(testArray, '9-0', 'first')).toStrictEqual(result90);
+    expect(sortArrayNumber(testArray, '9-0', 'last')).toStrictEqual(result90);
 });
 
 test('В массиве присутствуют другие значения помимо number', () => {
-    const getTestArray = () => [0, undefined, false, -1, null, 'string', true, '', 2,  NaN, 1, {}, -2, [], false];
-    const getResult09 = () => [-2, -1, 0, 1, 2];
-    const getResult90 = () => [2, 1, 0, -1, -2];
-    const getResultInvalidItems = () =>  [undefined, false, null, 'string', true, '', NaN, {}, [], false];
+    const testArray = [0, undefined, false, -1, null, 'string', true, '', 2, NaN, 1, {}, -2, [], false];
+    const result09 = [-2, -1, 0, 1, 2];
+    const result90 = result09.slice().reverse();
+    const resultInvalidItems = [undefined, false, null, 'string', true, '', NaN, {}, [], false];
 
-    expect(sortArrayNumber(getTestArray(), '0-9')).toStrictEqual([...getResult09(), ...getResultInvalidItems()]);
-    expect(sortArrayNumber(getTestArray(), '0-9', 'first')).toStrictEqual([...getResultInvalidItems(), ...getResult09()]);
-    expect(sortArrayNumber(getTestArray(), '0-9', 'last')).toStrictEqual([...getResult09(), ...getResultInvalidItems()]);
+    expect(sortArrayNumber(testArray, '0-9')).toStrictEqual([...result09, ...resultInvalidItems]);
+    expect(sortArrayNumber(testArray, '0-9', 'first')).toStrictEqual([...resultInvalidItems, ...result09]);
+    expect(sortArrayNumber(testArray, '0-9', 'last')).toStrictEqual([...result09, ...resultInvalidItems]);
 
-    expect(sortArrayNumber(getTestArray(), '9-0')).toStrictEqual([...getResult90(), ...getResultInvalidItems()]);
-    expect(sortArrayNumber(getTestArray(), '9-0', 'first')).toStrictEqual([...getResultInvalidItems(), ...getResult90()]);
-    expect(sortArrayNumber(getTestArray(), '9-0', 'last')).toStrictEqual([...getResult90(), ...getResultInvalidItems()]);
+    expect(sortArrayNumber(testArray, '9-0')).toStrictEqual([...result90, ...resultInvalidItems]);
+    expect(sortArrayNumber(testArray, '9-0', 'first')).toStrictEqual([...resultInvalidItems, ...result90]);
+    expect(sortArrayNumber(testArray, '9-0', 'last')).toStrictEqual([...result90, ...resultInvalidItems]);
 });
 
 test('Повторяющиеся number', () => {
-    const getTestArray = () => [5, 5, 5];
-
-    expect(sortArrayNumber(getTestArray(), '0-9')).toStrictEqual(getTestArray());
-    expect(sortArrayNumber(getTestArray(), '0-9', 'first')).toStrictEqual(getTestArray());
-    expect(sortArrayNumber(getTestArray(), '0-9', 'last')).toStrictEqual(getTestArray());
-
-    expect(sortArrayNumber(getTestArray(), '9-0')).toStrictEqual(getTestArray());
-    expect(sortArrayNumber(getTestArray(), '9-0', 'first')).toStrictEqual(getTestArray());
-    expect(sortArrayNumber(getTestArray(), '9-0', 'last')).toStrictEqual(getTestArray());
+    const testArray = [5, 5, 5];
+    testGroupIdenticalResult(testArray, testArray);
 });
 
 test('Массив содержит только NaN', () => {
-    const getTestArray = () => [NaN, NaN, NaN];
-
-    expect(sortArrayNumber(getTestArray(), '0-9')).toStrictEqual(getTestArray());
-    expect(sortArrayNumber(getTestArray(), '0-9', 'first')).toStrictEqual(getTestArray());
-    expect(sortArrayNumber(getTestArray(), '0-9', 'last')).toStrictEqual(getTestArray());
-
-    expect(sortArrayNumber(getTestArray(), '9-0')).toStrictEqual(getTestArray());
-    expect(sortArrayNumber(getTestArray(), '9-0', 'first')).toStrictEqual(getTestArray());
-    expect(sortArrayNumber(getTestArray(), '9-0', 'last')).toStrictEqual(getTestArray());
+    const testArray = [NaN, NaN, NaN];
+    testGroupIdenticalResult(testArray, testArray);
 });
