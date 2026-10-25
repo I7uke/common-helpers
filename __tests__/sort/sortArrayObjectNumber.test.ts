@@ -6,7 +6,7 @@ interface TestItem<T = number> {
 }
 
 function getFieldA(item: TestItem<any>): any {
-    return item?.fieldA as number | null | undefined;
+    return item?.fieldA;
 }
 
 function testGroupIdenticalResult(array: any[], result: any[]) {
@@ -122,13 +122,7 @@ test('Массив уже отсортирован', () => {
         { index: 4, fieldA: 2 }
     ];
 
-    const testArray90: TestItem<unknown>[] = [
-        { index: 0, fieldA: 2 },
-        { index: 1, fieldA: 1 },
-        { index: 2, fieldA: 0 },
-        { index: 3, fieldA: -1 },
-        { index: 4, fieldA: -2 }
-    ];
+    const testArray90: TestItem<unknown>[] = testArray09.slice().reverse();
 
     expect(sortArrayObjectNumber({
         array: testArray09,

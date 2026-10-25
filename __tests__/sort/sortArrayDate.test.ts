@@ -1,12 +1,13 @@
 import { sortArrayDate } from "../../src";
 
-const getDestDate1 = ()=> new Date(1730408400000);
-const getDestDate2 = ()=> new Date(1730494800000);
-const getDestDate3 = ()=> new Date(1730581200000);
-const getDestDate4 = ()=> new Date(1730667600000);
-const getDestDate5 = ()=> new Date(1730754000000);
+const getTestDate1 = () => new Date(1730408400000);
+const getTestDate2 = () => new Date(1730494800000);
+const getTestDate3 = () => new Date(1730581200000);
+const getTestDate4 = () => new Date(1730667600000);
+const getTestDate5 = () => new Date(1730754000000);
+const getTestInvalidDate = () => new Date('InvalidDate');
 
-function testGroupIdenticalResult(array: unknown[], result: unknown[]){
+function testGroupIdenticalResult(array: unknown[], result: unknown[]) {
     expect(sortArrayDate(array, '0-9')).toStrictEqual(result);
     expect(sortArrayDate(array, '0-9', 'first')).toStrictEqual(result);
     expect(sortArrayDate(array, '0-9', 'last')).toStrictEqual(result);
@@ -43,77 +44,86 @@ test('Некорректный аргумент и массивы с одним 
     }
 });
 
+test('Исходный массив не изменяется', () => {
+    const testArray: Date[] = [getTestDate1(), getTestDate2(), getTestDate3()];
+    const originalArray = testArray.slice();
+    const result = sortArrayDate(testArray, '0-9')
+    expect(testArray).toStrictEqual(originalArray);
+    expect(result === testArray).toStrictEqual(false);
+});
+
 test('В массиве нет дат', () => {
-    const getTestArray = () => [0, null, true, {}, '', undefined, false, 5, NaN, 'string'];
-    testGroupIdenticalResult(getTestArray(), getTestArray());
+    const testArray = [0, null, true, {}, '', undefined, false, 5, NaN, 'string'];
+    testGroupIdenticalResult(testArray, testArray);
 });
 
 test('Массив уже отсортирован', () => {
-    const getTestArray09 = () => [getDestDate1(), getDestDate2(), getDestDate3(), getDestDate4(), getDestDate5()];
-    const getTestArray90 = () => [getDestDate5(), getDestDate4(), getDestDate3(), getDestDate2(), getDestDate1()];
+    const testArray09 = [getTestDate1(), getTestDate2(), getTestDate3(), getTestDate4(), getTestDate5()];
+    const testArray90 = [getTestDate5(), getTestDate4(), getTestDate3(), getTestDate2(), getTestDate1()];
 
-    expect(sortArrayDate(getTestArray09(), '0-9')).toStrictEqual(getTestArray09());
-    expect(sortArrayDate(getTestArray09(), '0-9', 'first')).toStrictEqual(getTestArray09());
-    expect(sortArrayDate(getTestArray09(), '0-9', 'last')).toStrictEqual(getTestArray09());
+    expect(sortArrayDate(testArray09, '0-9')).toStrictEqual(testArray09);
+    expect(sortArrayDate(testArray09, '0-9', 'first')).toStrictEqual(testArray09);
+    expect(sortArrayDate(testArray09, '0-9', 'last')).toStrictEqual(testArray09);
 
-    expect(sortArrayDate(getTestArray90(), '9-0')).toStrictEqual(getTestArray90());
-    expect(sortArrayDate(getTestArray90(), '9-0', 'first')).toStrictEqual(getTestArray90());
-    expect(sortArrayDate(getTestArray90(), '9-0', 'last')).toStrictEqual(getTestArray90());
+    expect(sortArrayDate(testArray90, '9-0')).toStrictEqual(testArray90);
+    expect(sortArrayDate(testArray90, '9-0', 'first')).toStrictEqual(testArray90);
+    expect(sortArrayDate(testArray90, '9-0', 'last')).toStrictEqual(testArray90);
 });
 
 test('Массив только Date', () => {
-    const getTestArray = () => [getDestDate2(), getDestDate4(), getDestDate5(), getDestDate1(), getDestDate3()];
-    const getResult09 = () => [getDestDate1(), getDestDate2(), getDestDate3(), getDestDate4(), getDestDate5()];
-    const getResult90 = () => [getDestDate5(), getDestDate4(), getDestDate3(), getDestDate2(), getDestDate1()];
+    const testArray = [getTestDate2(), getTestDate4(), getTestDate5(), getTestDate1(), getTestDate3()];
+    const result09 = [getTestDate1(), getTestDate2(), getTestDate3(), getTestDate4(), getTestDate5()];
+    const result90 = [getTestDate5(), getTestDate4(), getTestDate3(), getTestDate2(), getTestDate1()];
 
-    expect(sortArrayDate(getTestArray(), '0-9')).toStrictEqual(getResult09());
-    expect(sortArrayDate(getTestArray(), '0-9', 'first')).toStrictEqual(getResult09());
-    expect(sortArrayDate(getTestArray(), '0-9', 'last')).toStrictEqual(getResult09());
+    expect(sortArrayDate(testArray, '0-9')).toStrictEqual(result09);
+    expect(sortArrayDate(testArray, '0-9', 'first')).toStrictEqual(result09);
+    expect(sortArrayDate(testArray, '0-9', 'last')).toStrictEqual(result09);
 
-    expect(sortArrayDate(getTestArray(), '9-0')).toStrictEqual(getResult90());
-    expect(sortArrayDate(getTestArray(), '9-0', 'first')).toStrictEqual(getResult90());
-    expect(sortArrayDate(getTestArray(), '9-0', 'last')).toStrictEqual(getResult90());
+    expect(sortArrayDate(testArray, '9-0')).toStrictEqual(result90);
+    expect(sortArrayDate(testArray, '9-0', 'first')).toStrictEqual(result90);
+    expect(sortArrayDate(testArray, '9-0', 'last')).toStrictEqual(result90);
 });
 
 test('В массиве присутствуют другие значения помимо Date', () => {
-    const getTestArray = () => [0, undefined, getDestDate3(), false, null, 'string', true, '', NaN, getDestDate1(), {}, 5, getDestDate2(), [], false];
-    const getResult09 = () => [getDestDate1(), getDestDate2(), getDestDate3()];
-    const getResult90 = () => [getDestDate3(), getDestDate2(), getDestDate1()];
-    const getResultInvalidItems = () => [0, undefined, false, null, 'string', true, '', NaN, {}, 5, [], false];
+    const testArray = [0, undefined, getTestDate3(), false, null, 'string', true, '', NaN, getTestDate1(), {}, 5, getTestDate2(), [], false];
+    const result09 = [getTestDate1(), getTestDate2(), getTestDate3()];
+    const result90 = [getTestDate3(), getTestDate2(), getTestDate1()];
+    const resultInvalidItems = [0, undefined, false, null, 'string', true, '', NaN, {}, 5, [], false];
 
-    expect(sortArrayDate(getTestArray(), '0-9')).toStrictEqual([...getResult09(), ...getResultInvalidItems()]);
-    expect(sortArrayDate(getTestArray(), '0-9', 'first')).toStrictEqual([...getResultInvalidItems(), ...getResult09()]);
-    expect(sortArrayDate(getTestArray(), '0-9', 'last')).toStrictEqual([...getResult09(), ...getResultInvalidItems()]);
+    expect(sortArrayDate(testArray, '0-9')).toStrictEqual([...result09, ...resultInvalidItems]);
+    expect(sortArrayDate(testArray, '0-9', 'first')).toStrictEqual([...resultInvalidItems, ...result09]);
+    expect(sortArrayDate(testArray, '0-9', 'last')).toStrictEqual([...result09, ...resultInvalidItems]);
 
-    expect(sortArrayDate(getTestArray(), '9-0')).toStrictEqual([...getResult90(), ...getResultInvalidItems()]);
-    expect(sortArrayDate(getTestArray(), '9-0', 'first')).toStrictEqual([...getResultInvalidItems(), ...getResult90()]);
-    expect(sortArrayDate(getTestArray(), '9-0', 'last')).toStrictEqual([...getResult90(), ...getResultInvalidItems()]);
+    expect(sortArrayDate(testArray, '9-0')).toStrictEqual([...result90, ...resultInvalidItems]);
+    expect(sortArrayDate(testArray, '9-0', 'first')).toStrictEqual([...resultInvalidItems, ...result90]);
+    expect(sortArrayDate(testArray, '9-0', 'last')).toStrictEqual([...result90, ...resultInvalidItems]);
 });
 
 test('Повторяющиеся Date', () => {
-    const getTestArray = () => [getDestDate1(), getDestDate1(), getDestDate1()];
+    const testArray = [getTestDate1(), getTestDate1(), getTestDate1()];
 
-    expect(sortArrayDate(getTestArray(), '0-9')).toStrictEqual(getTestArray());
-    expect(sortArrayDate(getTestArray(), '0-9', 'first')).toStrictEqual(getTestArray());
-    expect(sortArrayDate(getTestArray(), '0-9', 'last')).toStrictEqual(getTestArray());
+    expect(sortArrayDate(testArray, '0-9')).toStrictEqual(testArray);
+    expect(sortArrayDate(testArray, '0-9', 'first')).toStrictEqual(testArray);
+    expect(sortArrayDate(testArray, '0-9', 'last')).toStrictEqual(testArray);
 
-    expect(sortArrayDate(getTestArray(), '9-0')).toStrictEqual(getTestArray());
-    expect(sortArrayDate(getTestArray(), '9-0', 'first')).toStrictEqual(getTestArray());
-    expect(sortArrayDate(getTestArray(), '9-0', 'last')).toStrictEqual(getTestArray());
+    expect(sortArrayDate(testArray, '9-0')).toStrictEqual(testArray);
+    expect(sortArrayDate(testArray, '9-0', 'first')).toStrictEqual(testArray);
+    expect(sortArrayDate(testArray, '9-0', 'last')).toStrictEqual(testArray);
 });
 
 test('В массиве присутствует невалидная Date', () => {
-    const invalidDate = new Date('InvalidDate');
-    const getTestArray = () => [getDestDate3(), invalidDate, getDestDate1(), invalidDate, getDestDate2()];
+    const invalidDate1 = getTestInvalidDate();
+    const invalidDate2 = getTestInvalidDate();
 
-    const getResult09 = () => [getDestDate1(), getDestDate2(), getDestDate3()];
-    const getResult90 = () => [getDestDate3(), getDestDate2(), getDestDate1()];
-    const getInvalidItems = () => [invalidDate, invalidDate];
+    const testArray = [getTestDate3(), invalidDate1, getTestDate1(), invalidDate2, getTestDate2()];
+    const result09 = [getTestDate1(), getTestDate2(), getTestDate3()];
+    const result90 = [getTestDate3(), getTestDate2(), getTestDate1()];
+    const resultInvalidItems =[invalidDate1, invalidDate2];
 
-    expect(sortArrayDate(getTestArray(), '0-9')).toStrictEqual([...getResult09(), ...getInvalidItems()]);
-    expect(sortArrayDate(getTestArray(), '0-9', 'first')).toStrictEqual([...getInvalidItems(), ...getResult09()]);
-    expect(sortArrayDate(getTestArray(), '0-9', 'last')).toStrictEqual([...getResult09(), ...getInvalidItems()]);
-    expect(sortArrayDate(getTestArray(), '9-0')).toStrictEqual([...getResult90(), ...getInvalidItems()]);
-    expect(sortArrayDate(getTestArray(), '9-0', 'first')).toStrictEqual([...getInvalidItems(), ...getResult90()]);
-    expect(sortArrayDate(getTestArray(), '9-0', 'last')).toStrictEqual([...getResult90(), ...getInvalidItems()]);
+    expect(sortArrayDate(testArray, '0-9')).toStrictEqual([...result09, ...resultInvalidItems]);
+    expect(sortArrayDate(testArray, '0-9', 'first')).toStrictEqual([...resultInvalidItems, ...result09]);
+    expect(sortArrayDate(testArray, '0-9', 'last')).toStrictEqual([...result09, ...resultInvalidItems]);
+    expect(sortArrayDate(testArray, '9-0')).toStrictEqual([...result90, ...resultInvalidItems]);
+    expect(sortArrayDate(testArray, '9-0', 'first')).toStrictEqual([...resultInvalidItems, ...result90]);
+    expect(sortArrayDate(testArray, '9-0', 'last')).toStrictEqual([...result90, ...resultInvalidItems]);
 });
