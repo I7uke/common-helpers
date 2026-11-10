@@ -44,3 +44,15 @@ test('Корректная дата', () => {
     testValidValue(getTestValidDate2(), getTestValidDate2());
     testValidValue(new Date(currentDate), new Date(currentDate));
 });
+
+test('При ошибке getTime возвращается defaultValue', () => {
+    const invalidDate = {
+        [Symbol.toStringTag]: 'Date'
+    };
+
+    const defaultValue = new Date();
+
+    const result = validationDate(invalidDate, defaultValue);
+
+    expect(validationDate(result)).toStrictEqual(defaultValue);
+});
