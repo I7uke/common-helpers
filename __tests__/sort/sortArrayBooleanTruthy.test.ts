@@ -86,3 +86,19 @@ test('Falsy и truthy значения разных типов', () => {
     expect(sortArrayBooleanTruthy(getTestArray(), 'true-false')).toStrictEqual(getResultTrueFalse());
     expect(sortArrayBooleanTruthy(getTestArray(), 'false-true')).toStrictEqual(getResultFalseTrue());
 });
+
+test('Исходный массив не мутирует', () => {
+    const getTestArray = () => [false, true, false];
+
+    const testArray = getTestArray();
+    const results: unknown[][] = [];
+
+    results.push(sortArrayBooleanTruthy(testArray, 'false-true'));
+    results.push(sortArrayBooleanTruthy(testArray, 'true-false'));
+
+    for (const array of results) {
+        expect(array === testArray).toStrictEqual(false);
+    }
+
+    expect(testArray).toStrictEqual(getTestArray());
+});

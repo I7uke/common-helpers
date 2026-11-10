@@ -87,30 +87,65 @@ test('В массиве нет number', () => {
         { index: 3, fieldA: '' },
         { index: 4, fieldA: undefined },
         { index: 5, fieldA: false },
-        { index: 6, fieldA: Array(0) },
+        { index: 6, fieldA: [] },
         { index: 7, fieldA: 'string' }
     ]
 
     testGroupIdenticalResult(testArray, testArray);
 });
 
-test('Исходный массив не изменяется', () => {
-    const testArray = [
+test('Исходный массив не мутирует', () => {
+    const getTestArray = (): TestItem<unknown>[] => [
         { index: 0, fieldA: 0 },
         { index: 1, fieldA: 1 },
         { index: 2, fieldA: 2 }
     ];
 
-    const originalArray = testArray.slice();
+    const testArray = getTestArray();
+    const results: TestItem<unknown>[][] = [];
 
-    const result = sortArrayObjectNumber({
+    // 0-9
+    results.push(sortArrayObjectNumber({
         array: testArray,
+        field: getFieldA,
+        order: '0-9'
+    }));
+    results.push(sortArrayObjectNumber({
+        array: testArray,
+        field: getFieldA,
         order: '0-9',
-        field: getFieldA
-    });
+        orderOfInvalidValue: 'first'
+    }));
+    results.push(sortArrayObjectNumber({
+        array: testArray,
+        field: getFieldA,
+        order: '0-9',
+        orderOfInvalidValue: 'last'
+    }));
+    // 9-0
+    results.push(sortArrayObjectNumber({
+        array: testArray,
+        field: getFieldA,
+        order: '9-0'
+    }));
+    results.push(sortArrayObjectNumber({
+        array: testArray,
+        field: getFieldA,
+        order: '9-0',
+        orderOfInvalidValue: 'first'
+    }));
+    results.push(sortArrayObjectNumber({
+        array: testArray,
+        field: getFieldA,
+        order: '9-0',
+        orderOfInvalidValue: 'last'
+    }));
 
-    expect(testArray).toStrictEqual(originalArray);
-    expect(result === testArray).toStrictEqual(false);
+    for (const array of results) {
+        expect(array === testArray).toStrictEqual(false);
+    }
+
+    expect(testArray).toStrictEqual(getTestArray());
 });
 
 test('Массив уже отсортирован', () => {
@@ -242,7 +277,7 @@ test('В массиве присутствуют другие значения �
         { index: 10, fieldA: 1 },
         { index: 11, fieldA: {} },
         { index: 12, fieldA: -2 },
-        { index: 13, fieldA: Array(0) },
+        { index: 13, fieldA: [] },
         { index: 14, fieldA: false }
     ];
 
@@ -265,7 +300,7 @@ test('В массиве присутствуют другие значения �
         { index: 7, fieldA: '' },
         { index: 9, fieldA: NaN },
         { index: 11, fieldA: {} },
-        { index: 13, fieldA: Array(0) },
+        { index: 13, fieldA: [] },
         { index: 14, fieldA: false }
     ];
 

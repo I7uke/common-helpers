@@ -358,19 +358,55 @@ test('Повторяющиеся true и false', () => {
     }
 });
 
-test('Исходный массив не изменяется', () => {
-    const testArray = [
+test('Исходный массив не мутирует', () => {
+    const getTestArray = (): TestItem<unknown>[] => [
         { index: 0, fieldA: false },
         { index: 1, fieldA: true },
     ];
 
-    const originalArray = testArray.slice();
+    const testArray = getTestArray();
+    const results: TestItem<unknown>[][] = [];
 
-    sortArrayObjectBoolean({
+    // false-true
+    results.push(sortArrayObjectBoolean({
+        array: testArray,
+        field: getFieldA,
+        order: 'false-true'
+    }));
+    results.push(sortArrayObjectBoolean({
+        array: testArray,
+        field: getFieldA,
+        order: 'false-true',
+        orderOfInvalidValue: 'first'
+    }));
+    results.push(sortArrayObjectBoolean({
+        array: testArray,
+        field: getFieldA,
+        order: 'false-true',
+        orderOfInvalidValue: 'last'
+    }));
+    // true-false
+    results.push(sortArrayObjectBoolean({
+        array: testArray,
+        field: getFieldA,
+        order: 'true-false'
+    }));
+    results.push(sortArrayObjectBoolean({
         array: testArray,
         field: getFieldA,
         order: 'true-false',
-    });
+        orderOfInvalidValue: 'first'
+    }));
+    results.push(sortArrayObjectBoolean({
+        array: testArray,
+        field: getFieldA,
+        order: 'true-false',
+        orderOfInvalidValue: 'last'
+    }));
 
-    expect(testArray).toStrictEqual(originalArray);
+    for (const array of results) {
+        expect(array === testArray).toStrictEqual(false);
+    }
+
+    expect(testArray).toStrictEqual(getTestArray());
 });

@@ -97,31 +97,12 @@ test('В массиве нет Date', () => {
         { index: 5, fieldA: undefined },
         { index: 6, fieldA: false },
         { index: 7, fieldA: -1 },
-        { index: 8, fieldA: Array(0) },
+        { index: 8, fieldA: [] },
         { index: 9, fieldA: 'string' },
         { index: 10, fieldA: 1 },
     ];
 
     testGroupIdenticalResult(testArray, testArray);
-});
-
-test('Исходный массив не изменяется', () => {
-    const testArray = [
-        { index: 0, fieldA: getTestDate1() },
-        { index: 1, fieldA: getTestDate2() },
-        { index: 2, fieldA: getTestDate3() }
-    ];
-
-    const originalArray = testArray.slice();
-
-    const result = sortArrayObjectDate({
-        array: testArray,
-        order: '0-9',
-        field: getFieldA
-    });
-
-    expect(testArray).toStrictEqual(originalArray);
-    expect(result === testArray).toStrictEqual(false);
 });
 
 test('Массив уже отсортирован', () => {
@@ -242,7 +223,7 @@ test('В массиве присутствуют другие значения �
         { index: 10, fieldA: getTestDate1() },
         { index: 11, fieldA: {} },
         { index: 12, fieldA: getTestDate5() },
-        { index: 13, fieldA: Array(0) },
+        { index: 13, fieldA: [] },
         { index: 14, fieldA: false }
     ];
 
@@ -265,7 +246,7 @@ test('В массиве присутствуют другие значения �
         { index: 7, fieldA: '' },
         { index: 9, fieldA: NaN },
         { index: 11, fieldA: {} },
-        { index: 13, fieldA: Array(0) },
+        { index: 13, fieldA: [] },
         { index: 14, fieldA: false }
     ];
 
@@ -396,4 +377,58 @@ test('В массиве присутствует невалидная Date', () 
         field: getFieldA,
         orderOfInvalidValue: 'last'
     })).toStrictEqual([...result90, ...resultInvalidItems]);
+});
+
+test('Исходный массив не мутирует', () => {
+    const getTestArray = (): TestItem<unknown>[] => [
+        { index: 0, fieldA: getTestDate1() },
+        { index: 1, fieldA: getTestDate2() },
+        { index: 2, fieldA: getTestDate3() }
+    ];
+
+    const testArray = getTestArray();
+    const results: TestItem<unknown>[][] = [];
+
+    // 0-9
+    results.push(sortArrayObjectDate({
+        array: testArray,
+        field: getFieldA,
+        order: '0-9'
+    }));
+    results.push(sortArrayObjectDate({
+        array: testArray,
+        field: getFieldA,
+        order: '0-9',
+        orderOfInvalidValue: 'first'
+    }));
+    results.push(sortArrayObjectDate({
+        array: testArray,
+        field: getFieldA,
+        order: '0-9',
+        orderOfInvalidValue: 'last'
+    }));
+    // 9-0
+    results.push(sortArrayObjectDate({
+        array: testArray,
+        field: getFieldA,
+        order: '9-0'
+    }));
+    results.push(sortArrayObjectDate({
+        array: testArray,
+        field: getFieldA,
+        order: '9-0',
+        orderOfInvalidValue: 'first'
+    }));
+    results.push(sortArrayObjectDate({
+        array: testArray,
+        field: getFieldA,
+        order: '9-0',
+        orderOfInvalidValue: 'last'
+    }));
+
+    for (const array of results) {
+        expect(array === testArray).toStrictEqual(false);
+    }
+
+    expect(testArray).toStrictEqual(getTestArray());
 });

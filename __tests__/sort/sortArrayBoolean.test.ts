@@ -120,3 +120,26 @@ test('Повторяющиеся true и false', () => {
     expect(sortArrayBoolean(getTestArrayFalse(), 'false-true', 'first')).toStrictEqual(getTestArrayFalse());
     expect(sortArrayBoolean(getTestArrayFalse(), 'false-true', 'last')).toStrictEqual(getTestArrayFalse());
 });
+
+test('Исходный массив не мутирует', () => {
+    const getTestArray = () => [false, true, false];
+
+    const testArray = getTestArray();
+    const results: unknown[][] = [];
+
+    // false-true
+    results.push(sortArrayBoolean(testArray, 'false-true'));
+    results.push(sortArrayBoolean(testArray, 'false-true', 'first'));
+    results.push(sortArrayBoolean(testArray, 'false-true', 'last'));
+
+    // true-false
+    results.push(sortArrayBoolean(testArray, 'true-false'));
+    results.push(sortArrayBoolean(testArray, 'true-false', 'first'));
+    results.push(sortArrayBoolean(testArray, 'true-false', 'last'));
+
+    for (const array of results) {
+        expect(array === testArray).toStrictEqual(false);
+    }
+
+    expect(testArray).toStrictEqual(getTestArray());
+});

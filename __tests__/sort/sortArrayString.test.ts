@@ -117,19 +117,40 @@ test('Повторяющиеся string', () => {
 test('Исходный массив не мутирует', () => {
     const getTestArray = () => [false, '3', null, '1', true, '2', undefined, '', -1, '5', [], '4'];
 
-    const getResultAZ = () => ['1', '2', '3', '4', '5'];
-    const getResultZA = () => ['5', '4', '3', '2', '1'];
-    const getResultInvalidItems = () => [false, null, true, undefined, '', -1, []];
-
     const testArray = getTestArray();
+    const results: unknown[][] = [];
 
-    expect(sortArrayString(testArray, 'a-z')).toStrictEqual([...getResultAZ(), ...getResultInvalidItems()]);
-    expect(sortArrayString(testArray, 'a-z', 'first')).toStrictEqual([...getResultInvalidItems(), ...getResultAZ()]);
-    expect(sortArrayString(testArray, 'a-z', 'last')).toStrictEqual([...getResultAZ(), ...getResultInvalidItems()]);
+    // a-z
+    results.push(sortArrayString(testArray, 'a-z'));
+    results.push(sortArrayString(testArray, 'a-z', 'first'));
+    results.push(sortArrayString(testArray, 'a-z', 'last'));
+    // z-a
+    results.push(sortArrayString(testArray, 'z-a'));
+    results.push(sortArrayString(testArray, 'z-a', 'first'));
+    results.push(sortArrayString(testArray, 'z-a', 'last'));
 
-    expect(sortArrayString(testArray, 'z-a')).toStrictEqual([...getResultZA(), ...getResultInvalidItems()]);
-    expect(sortArrayString(testArray, 'z-a', 'first')).toStrictEqual([...getResultInvalidItems(), ...getResultZA()]);
-    expect(sortArrayString(testArray, 'z-a', 'last')).toStrictEqual([...getResultZA(), ...getResultInvalidItems()]);
+    for (const array of results) {
+        expect(array === testArray).toStrictEqual(false);
+    }
 
     expect(testArray).toStrictEqual(getTestArray());
+});
+
+test('Сортировка строк с заглавными и строчными буквами', () => {
+    const getTestArray = () => ['Яблоко', 'апельсин', 'ягода', 'Ананас', 'Banana', 'apple', 'Cherry', 'broccoli', 'cucumber'];
+
+    const testData: Record<string,  () => string[]> = {
+        'ru': () => ['Ананас', 'апельсин', 'Яблоко', 'ягода', 'apple', 'Banana', 'broccoli', 'Cherry', 'cucumber'],
+        'en': () => ['apple', 'Banana', 'broccoli', 'Cherry', 'cucumber', 'Ананас', 'апельсин', 'Яблоко', 'ягода']
+    };
+
+    for (const locale in testData) {
+        const getResultAZ = testData[locale]!;
+
+        expect(sortArrayString(getTestArray(), 'a-z', 'first', locale)).toStrictEqual(getResultAZ());
+        expect(sortArrayString(getTestArray(), 'a-z', 'last', locale)).toStrictEqual(getResultAZ());
+
+        expect(sortArrayString(getTestArray(), 'z-a', 'first', locale)).toStrictEqual(getResultAZ().reverse());
+        expect(sortArrayString(getTestArray(), 'z-a', 'last', locale)).toStrictEqual(getResultAZ().reverse());
+    }
 });

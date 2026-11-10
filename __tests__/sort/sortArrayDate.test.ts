@@ -44,14 +44,6 @@ test('Некорректный аргумент и массивы с одним 
     }
 });
 
-test('Исходный массив не изменяется', () => {
-    const testArray: Date[] = [getTestDate1(), getTestDate2(), getTestDate3()];
-    const originalArray = testArray.slice();
-    const result = sortArrayDate(testArray, '0-9')
-    expect(testArray).toStrictEqual(originalArray);
-    expect(result === testArray).toStrictEqual(false);
-});
-
 test('В массиве нет дат', () => {
     const testArray = [0, null, true, {}, '', undefined, false, 5, NaN, 'string'];
     testGroupIdenticalResult(testArray, testArray);
@@ -126,4 +118,26 @@ test('В массиве присутствует невалидная Date', () 
     expect(sortArrayDate(testArray, '9-0')).toStrictEqual([...result90, ...resultInvalidItems]);
     expect(sortArrayDate(testArray, '9-0', 'first')).toStrictEqual([...resultInvalidItems, ...result90]);
     expect(sortArrayDate(testArray, '9-0', 'last')).toStrictEqual([...result90, ...resultInvalidItems]);
+});
+
+test('Исходный массив не мутирует', () => {
+    const getTestArray = () => [getTestDate1(), getTestDate2(), getTestDate3()];
+
+    const testArray = getTestArray();
+    const results: unknown[][] = [];
+
+    // 0-9
+    results.push(sortArrayDate(testArray, '0-9'));
+    results.push(sortArrayDate(testArray, '0-9', 'first'));
+    results.push(sortArrayDate(testArray, '0-9', 'last'));
+    // 9-0
+    results.push(sortArrayDate(testArray, '9-0'));
+    results.push(sortArrayDate(testArray, '9-0', 'first'));
+    results.push(sortArrayDate(testArray, '9-0', 'last'));
+
+    for (const array of results) {
+        expect(array === testArray).toStrictEqual(false);
+    }
+
+    expect(testArray).toStrictEqual(getTestArray());
 });

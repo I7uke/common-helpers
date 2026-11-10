@@ -37,14 +37,6 @@ test('Некорректный аргумент и массивы с одним 
     }
 });
 
-test('Исходный массив не изменяется', () => {
-    const testArray = [0, 1, 2];
-    const originalArray = testArray.slice();
-    const result = sortArrayNumber(testArray, '0-9')
-    expect(testArray).toStrictEqual(originalArray);
-    expect(result === testArray).toStrictEqual(false);
-});
-
 test('В массиве нет number', () => {
     const testArray = [null, true, {}, '', undefined, false, [], 'string'];
     testGroupIdenticalResult(testArray, testArray);
@@ -91,7 +83,6 @@ test('В массиве присутствуют другие значения �
     expect(sortArrayNumber(testArray, '9-0', 'first')).toStrictEqual([...resultInvalidItems, ...result90]);
     expect(sortArrayNumber(testArray, '9-0', 'last')).toStrictEqual([...result90, ...resultInvalidItems]);
 });
-
 test('Повторяющиеся number', () => {
     const testArray = [5, 5, 5];
     testGroupIdenticalResult(testArray, testArray);
@@ -100,4 +91,26 @@ test('Повторяющиеся number', () => {
 test('Массив содержит только NaN', () => {
     const testArray = [NaN, NaN, NaN];
     testGroupIdenticalResult(testArray, testArray);
+});
+
+test('Исходный массив не мутирует', () => {
+    const getTestArray = () => [0, 1, 2];
+
+    const testArray = getTestArray();
+    const results: unknown[][] = [];
+
+    // 0-9
+    results.push(sortArrayNumber(testArray, '0-9'));
+    results.push(sortArrayNumber(testArray, '0-9', 'first'));
+    results.push(sortArrayNumber(testArray, '0-9', 'last'));
+    // 9-0
+    results.push(sortArrayNumber(testArray, '9-0'));
+    results.push(sortArrayNumber(testArray, '9-0', 'first'));
+    results.push(sortArrayNumber(testArray, '9-0', 'last'));
+
+    for (const array of results) {
+        expect(array === testArray).toStrictEqual(false);
+    }
+
+    expect(testArray).toStrictEqual(getTestArray());
 });
