@@ -8,7 +8,8 @@
     "test:convert": "jest __tests__/convert --coverage",
     "test:sort": "jest __tests__/sort --coverage",
     "test:validators": "jest __tests__/validators --coverage",
-    "test-dateParser": "jest dateParser.test.ts --coverage",
+    "test:misc": "jest __tests__/misc --coverage",
+
     "test-fixedLengthString": "jest fixedLengthString.test.ts --coverage",
     "test-getFileExtensionByName": "jest getFileExtensionByName.test.ts --coverage",
     "test-getLastIdFromUrl": "jest getLastIdFromUrl.test.ts --coverage",
