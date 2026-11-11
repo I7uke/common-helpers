@@ -13,7 +13,7 @@ test('Некорректные значения', () => {
         '123',
         NaN,
         Number('string'),
-        new Date('date'),
+        new Date('InvalidDate'),
         new Date(),
         undefined,
         null,

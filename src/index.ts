@@ -11,6 +11,7 @@ export { default as sortArrayObjectBoolean } from './sort/sortArrayObjectBoolean
 export { default as sortArrayObjectDate } from './sort/sortArrayObjectDate';
 export { default as sortArrayObjectNumber } from './sort/sortArrayObjectNumber';
 export { default as dateParserString } from './misc/dateParserString';
+export { default as fixedLengthString } from './misc/fixedLengthString';
 
 export { default as validationStringArray } from './validators/validationStringArray';
 export { default as validationString } from './validators/validationString';
@@ -22,7 +23,7 @@ export { default as numberRounding } from './misc/numberRounding';
 export { default as getUrlParametersParser } from './getUrlParametersParser';
 export { default as getLastIdFromUrl } from './getLastIdFromUrl';
 export { default as getFileExtensionByName } from './getFileExtensionByName';
-export { default as fixedLengthString } from './fixedLengthString';
+
 export { default as getPagination } from './getPagination';
 export { default as uniqueArray } from './uniqueArray';
 export { default as  sortArrayObjectString} from './sort/sortArrayObjectString';
