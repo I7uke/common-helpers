@@ -10,19 +10,18 @@ export { default as sortArrayString } from './sort/sortArrayString';
 export { default as sortArrayObjectBoolean } from './sort/sortArrayObjectBoolean';
 export { default as sortArrayObjectDate } from './sort/sortArrayObjectDate';
 export { default as sortArrayObjectNumber } from './sort/sortArrayObjectNumber';
-export { default as dateParserString } from './misc/dateParserString';
-export { default as fixedLengthString } from './misc/fixedLengthString';
-
 export { default as validationStringArray } from './validators/validationStringArray';
 export { default as validationString } from './validators/validationString';
 export { default as validationNumberArray } from './validators/validationNumberArray';
 export { default as validationNumber } from './validators/validationNumber';
 export { default as validationDate } from './validators/validationDate';
-export { default as validationNumberInRange } from './validators/validationNumberInRange';
+export { default as dateParserString } from './misc/dateParserString';
+export { default as fixedLengthString } from './misc/fixedLengthString';
 export { default as numberRounding } from './misc/numberRounding';
+export { default as getFileExtensionByName } from './misc/getFileExtensionByName';
+
 export { default as getUrlParametersParser } from './getUrlParametersParser';
 export { default as getLastIdFromUrl } from './getLastIdFromUrl';
-export { default as getFileExtensionByName } from './getFileExtensionByName';
 
 export { default as getPagination } from './getPagination';
 export { default as uniqueArray } from './uniqueArray';

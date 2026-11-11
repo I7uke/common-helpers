@@ -1,9 +1,3 @@
-/**
- * Проверить массив чисел
- * В случае если массив смешанный, будет возвращен массив содержащий только числа
- * Если передан не массив, будет возвращен пустой массив
- * @param arr
- */
 export default function validationNumberArray(arr: unknown): number[] {
     const result: number[] = [];
 
