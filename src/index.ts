@@ -19,10 +19,9 @@ export { default as dateParserString } from './misc/dateParserString';
 export { default as fixedLengthString } from './misc/fixedLengthString';
 export { default as numberRounding } from './misc/numberRounding';
 export { default as getFileExtensionByName } from './misc/getFileExtensionByName';
+export { default as getLastPathFromUrl } from './misc/getLastPathFromUrl';
 
 export { default as getUrlParametersParser } from './getUrlParametersParser';
-export { default as getLastIdFromUrl } from './getLastIdFromUrl';
-
 export { default as getPagination } from './getPagination';
 export { default as uniqueArray } from './uniqueArray';
 export { default as  sortArrayObjectString} from './sort/sortArrayObjectString';
