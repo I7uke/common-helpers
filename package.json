@@ -9,6 +9,7 @@
     "test:sort": "jest __tests__/sort --coverage",
     "test:validators": "jest __tests__/validators --coverage",
     "test:misc": "jest __tests__/misc --coverage",
+    "test:filter": "jest __tests__/filter --coverage",
 
     "test-fixedLengthString": "jest fixedLengthString.test.ts --coverage",
     "test-getFileExtensionByName": "jest getFileExtensionByName.test.ts --coverage",

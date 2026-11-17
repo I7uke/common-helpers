@@ -21,5 +21,6 @@ export { default as fixedLengthString } from './misc/fixedLengthString';
 export { default as numberRounding } from './misc/numberRounding';
 export { default as getFileExtensionByName } from './misc/getFileExtensionByName';
 export { default as getLastPathFromUrl } from './misc/getLastPathFromUrl';
+export { default as searchStringArrayObject } from './filter/searchStringArrayObject';
 
 export { default as getPagination } from './getPagination';
